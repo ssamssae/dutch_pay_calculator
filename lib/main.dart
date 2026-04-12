@@ -251,25 +251,27 @@ class _MainScreenState extends State<MainScreen> {
                 children: [
                   // 금액 표시 영역
                   SizedBox(
-                    height: 48,
+                    height: 52,
                     child: Align(
-                      alignment: Alignment.centerLeft,
+                      alignment: Alignment.bottomLeft,
                       child: _digits.isEmpty
                           ? Text(
                               '얼마를 나눌까요?',
                               style: TextStyle(
-                                fontSize: 32,
+                                fontSize: 36,
                                 fontWeight: FontWeight.w700,
                                 color: Colors.white.withValues(alpha: 0.2),
+                                height: 1.0,
                               ),
                             )
                           : Text(
                               '${_formatNumber(_amount)}원',
                               style: const TextStyle(
-                                fontSize: 40,
+                                fontSize: 36,
                                 fontWeight: FontWeight.w800,
                                 color: Colors.white,
                                 letterSpacing: -0.5,
+                                height: 1.0,
                               ),
                             ),
                     ),
@@ -279,33 +281,25 @@ class _MainScreenState extends State<MainScreen> {
 
                   // 인원수 조정
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
                     decoration: BoxDecoration(
                       color: const Color(0xFF16213E),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text(
-                          '인원수',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white70,
-                          ),
-                        ),
-                        const Spacer(),
                         _buildCircleButton(
                           icon: Icons.remove,
                           onPressed: _decrement,
                           enabled: _personCount > 1,
                         ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          padding: const EdgeInsets.symmetric(horizontal: 28),
                           child: Text(
                             '$_personCount명',
                             style: const TextStyle(
-                              fontSize: 24,
+                              fontSize: 34,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
                             ),
@@ -317,6 +311,17 @@ class _MainScreenState extends State<MainScreen> {
                           enabled: _personCount < 100,
                         ),
                       ],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  const Center(
+                    child: Text(
+                      '인원수',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white38,
+                      ),
                     ),
                   ),
 
@@ -485,8 +490,8 @@ class _MainScreenState extends State<MainScreen> {
     return GestureDetector(
       onTap: enabled ? onPressed : null,
       child: Container(
-        width: 36,
-        height: 36,
+        width: 48,
+        height: 48,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: enabled
@@ -495,7 +500,7 @@ class _MainScreenState extends State<MainScreen> {
         ),
         child: Icon(
           icon,
-          size: 20,
+          size: 26,
           color: enabled ? Colors.black87 : Colors.white24,
         ),
       ),

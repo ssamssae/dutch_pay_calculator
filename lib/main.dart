@@ -250,25 +250,30 @@ class _MainScreenState extends State<MainScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // 금액 표시 영역
-                  if (_digits.isEmpty)
-                    Text(
-                      '얼마를 나눌까요?',
-                      style: TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.white.withValues(alpha: 0.2),
-                      ),
-                    )
-                  else
-                    Text(
-                      '${_formatNumber(_amount)}원',
-                      style: const TextStyle(
-                        fontSize: 40,
-                        fontWeight: FontWeight.w800,
-                        color: Colors.white,
-                        letterSpacing: -0.5,
-                      ),
+                  SizedBox(
+                    height: 48,
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: _digits.isEmpty
+                          ? Text(
+                              '얼마를 나눌까요?',
+                              style: TextStyle(
+                                fontSize: 32,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white.withValues(alpha: 0.2),
+                              ),
+                            )
+                          : Text(
+                              '${_formatNumber(_amount)}원',
+                              style: const TextStyle(
+                                fontSize: 40,
+                                fontWeight: FontWeight.w800,
+                                color: Colors.white,
+                                letterSpacing: -0.5,
+                              ),
+                            ),
                     ),
+                  ),
 
                   const SizedBox(height: 28),
 

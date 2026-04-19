@@ -1,4 +1,4 @@
-package com.daejongkang.dutch_pay_calculator
+package com.daejongkang.dutchpay
 
 import io.flutter.embedding.android.FlutterActivity
 

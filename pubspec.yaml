@@ -1,5 +1,5 @@
 name: dutch_pay_calculator
-description: "A new Flutter project."
+description: "금액과 인원수를 입력하면 1인당 금액과 나머지를 계산해주는 더치페이 계산기 (Flutter)."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev

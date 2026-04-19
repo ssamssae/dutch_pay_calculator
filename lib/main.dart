@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   runApp(const DutchPayApp());
@@ -210,48 +209,6 @@ class _MainScreenState extends State<MainScreen> {
             fontSize: 18 * scale,
           ),
         ),
-        actions: [
-          Padding(
-            padding: EdgeInsets.only(right: 12 * scale),
-            child: GestureDetector(
-              onTap: () {
-                launchUrl(
-                  Uri.parse('https://ssamssae.github.io/daejong-page'),
-                  mode: LaunchMode.externalApplication,
-                );
-              },
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 10 * scale,
-                  vertical: 5 * scale,
-                ),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.amber.withValues(alpha: 0.4)),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.favorite,
-                      size: 12 * scale,
-                      color: Colors.amber.shade300,
-                    ),
-                    SizedBox(width: 4 * scale),
-                    Text(
-                      '응원',
-                      style: TextStyle(
-                        color: Colors.amber.shade300,
-                        fontSize: 11 * scale,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
       ),
       body: SafeArea(
         top: false,
@@ -406,7 +363,7 @@ class _MainScreenState extends State<MainScreen> {
                                     if (_remainder != null && _remainder! > 0) ...[
                                       SizedBox(height: 4 * scale),
                                       Text(
-                                        '${_formatNumber(_remainder!)}원 남음',
+                                        '${_formatNumber(_remainder!)}원은 누가 낼래?',
                                         style: TextStyle(
                                           fontSize: 12 * scale,
                                           color: Colors.white38,

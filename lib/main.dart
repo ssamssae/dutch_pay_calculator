@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(const DutchPayApp());
@@ -136,6 +137,7 @@ class _MainScreenState extends State<MainScreen> {
   int get _amount => int.tryParse(_digits) ?? 0;
 
   void _onKeyTap(String key) {
+    HapticFeedback.lightImpact();
     setState(() {
       if (key == 'C') {
         _digits = '';
@@ -155,6 +157,7 @@ class _MainScreenState extends State<MainScreen> {
 
   void _increment() {
     if (_personCount < 100) {
+      HapticFeedback.selectionClick();
       setState(() {
         _personCount++;
         _perPerson = null;
@@ -165,6 +168,7 @@ class _MainScreenState extends State<MainScreen> {
 
   void _decrement() {
     if (_personCount > 1) {
+      HapticFeedback.selectionClick();
       setState(() {
         _personCount--;
         _perPerson = null;
@@ -175,6 +179,7 @@ class _MainScreenState extends State<MainScreen> {
 
   void _calculate() {
     if (_amount <= 0) return;
+    HapticFeedback.mediumImpact();
     setState(() {
       _perPerson = _amount ~/ _personCount;
       _remainder = _amount % _personCount;

@@ -33,8 +33,7 @@ class AdsService {
     return 'ca-app-pub-3940256099942544/2934735716';
   }
 
-  // TODO: AdMob 콘솔에서 더치페이 iOS 배너 광고단위 생성 후 교체
-  static const _realIosBannerUnitId = 'ca-app-pub-XXXXXXXXXXXXXXXX/XXXXXXXXXX';
+  static const _realIosBannerUnitId = 'ca-app-pub-7025432711849670/6556140410';
 }
 
 class AdaptiveBanner extends StatefulWidget {

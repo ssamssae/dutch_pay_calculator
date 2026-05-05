@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'services/ads_service.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await AdsService.init();
   runApp(const DutchPayApp());
 }
 
@@ -379,6 +382,9 @@ class _MainScreenState extends State<MainScreen> {
                 ),
               ),
             ),
+
+            // 광고 배너 (키패드 위)
+            const AdaptiveBanner(),
 
             // 하단 고정: 계산 버튼 + 키패드 (화면의 약 55%)
             Container(

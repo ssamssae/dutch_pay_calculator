@@ -2,6 +2,9 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<!-- AdMob App ID — 더치페이 iOS 운영 (2026-05-12 발급). -->
+	<key>GADApplicationIdentifier</key>
+	<string>ca-app-pub-7025432711849670~7679626181</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>

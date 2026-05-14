@@ -238,29 +238,46 @@ class _MainScreenState extends State<MainScreen> {
                       flex: 2,
                       child: Align(
                         alignment: Alignment.centerLeft,
-                        child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          alignment: Alignment.centerLeft,
-                          child: _digits.isEmpty
-                              ? Text(
-                                  '얼마를 나눌까요?',
-                                  style: TextStyle(
-                                    fontSize: 34 * scale,
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.white.withValues(alpha: 0.2),
-                                    height: 1.0,
-                                  ),
-                                )
-                              : Text(
-                                  '${_formatNumber(_amount)}원',
-                                  style: TextStyle(
-                                    fontSize: 34 * scale,
-                                    fontWeight: FontWeight.w800,
-                                    color: Colors.white,
-                                    letterSpacing: -0.5,
-                                    height: 1.0,
-                                  ),
-                                ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              '총 금액',
+                              style: TextStyle(
+                                fontSize: 12 * scale,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white38,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                            SizedBox(height: 6 * scale),
+                            FittedBox(
+                              fit: BoxFit.scaleDown,
+                              alignment: Alignment.centerLeft,
+                              child: _digits.isEmpty
+                                  ? Text(
+                                      '얼마를 나눌까요?',
+                                      style: TextStyle(
+                                        fontSize: 32 * scale,
+                                        fontWeight: FontWeight.w700,
+                                        color:
+                                            Colors.white.withValues(alpha: 0.18),
+                                        height: 1.0,
+                                      ),
+                                    )
+                                  : Text(
+                                      '${_formatNumber(_amount)}원',
+                                      style: TextStyle(
+                                        fontSize: 36 * scale,
+                                        fontWeight: FontWeight.w800,
+                                        color: Colors.white,
+                                        letterSpacing: -0.8,
+                                        height: 1.0,
+                                      ),
+                                    ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -271,14 +288,27 @@ class _MainScreenState extends State<MainScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
+                          Text(
+                            '인원수',
+                            style: TextStyle(
+                              fontSize: 12 * scale,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white38,
+                              letterSpacing: 0.5,
+                            ),
+                          ),
+                          SizedBox(height: 8 * scale),
                           Container(
                             padding: EdgeInsets.symmetric(
                               horizontal: 20 * scale,
                               vertical: 14 * scale,
                             ),
                             decoration: BoxDecoration(
-                              color: const Color(0xFF16213E),
-                              borderRadius: BorderRadius.circular(16),
+                              color: Colors.white.withValues(alpha: 0.04),
+                              borderRadius: BorderRadius.circular(18),
+                              border: Border.all(
+                                color: Colors.white.withValues(alpha: 0.06),
+                              ),
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -300,6 +330,7 @@ class _MainScreenState extends State<MainScreen> {
                                       fontWeight: FontWeight.bold,
                                       color: Colors.white,
                                       height: 1.0,
+                                      letterSpacing: -0.5,
                                     ),
                                   ),
                                 ),
@@ -310,15 +341,6 @@ class _MainScreenState extends State<MainScreen> {
                                   scale: scale,
                                 ),
                               ],
-                            ),
-                          ),
-                          SizedBox(height: 6 * scale),
-                          Text(
-                            '인원수',
-                            style: TextStyle(
-                              fontSize: 13 * scale,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white38,
                             ),
                           ),
                         ],
@@ -334,47 +356,97 @@ class _MainScreenState extends State<MainScreen> {
                             : Container(
                                 width: double.infinity,
                                 padding: EdgeInsets.symmetric(
-                                  horizontal: 16 * scale,
-                                  vertical: 14 * scale,
+                                  horizontal: 18 * scale,
+                                  vertical: 16 * scale,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFF16213E),
-                                  borderRadius: BorderRadius.circular(16),
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      const Color(0xFFFFB300)
+                                          .withValues(alpha: 0.18),
+                                      const Color(0xFFFFB300)
+                                          .withValues(alpha: 0.06),
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(20),
                                   border: Border.all(
                                     color: const Color(0xFFFFB300)
-                                        .withValues(alpha: 0.3),
+                                        .withValues(alpha: 0.45),
+                                    width: 1.2,
                                   ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: const Color(0xFFFFB300)
+                                          .withValues(alpha: 0.18),
+                                      blurRadius: 18,
+                                      spreadRadius: -4,
+                                      offset: const Offset(0, 4),
+                                    ),
+                                  ],
                                 ),
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    Text(
-                                      '1인당 금액',
-                                      style: TextStyle(
-                                        fontSize: 13 * scale,
-                                        color: Colors.white54,
-                                      ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.person_outline_rounded,
+                                          size: 14 * scale,
+                                          color: const Color(0xFFFFB300)
+                                              .withValues(alpha: 0.9),
+                                        ),
+                                        SizedBox(width: 5 * scale),
+                                        Text(
+                                          '1인당 금액',
+                                          style: TextStyle(
+                                            fontSize: 12 * scale,
+                                            fontWeight: FontWeight.w600,
+                                            color: const Color(0xFFFFB300)
+                                                .withValues(alpha: 0.9),
+                                            letterSpacing: 0.5,
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                    SizedBox(height: 6 * scale),
+                                    SizedBox(height: 8 * scale),
                                     FittedBox(
                                       fit: BoxFit.scaleDown,
                                       child: Text(
                                         '${_formatNumber(_perPerson!)}원',
                                         style: TextStyle(
-                                          fontSize: 32 * scale,
-                                          fontWeight: FontWeight.bold,
-                                          color: const Color(0xFFFFB300),
+                                          fontSize: 38 * scale,
+                                          fontWeight: FontWeight.w800,
+                                          color: const Color(0xFFFFD54F),
                                           height: 1.0,
+                                          letterSpacing: -1.0,
                                         ),
                                       ),
                                     ),
-                                    if (_remainder != null && _remainder! > 0) ...[
-                                      SizedBox(height: 4 * scale),
-                                      Text(
-                                        '${_formatNumber(_remainder!)}원은 누가 낼래?',
-                                        style: TextStyle(
-                                          fontSize: 12 * scale,
-                                          color: Colors.white38,
+                                    if (_remainder != null &&
+                                        _remainder! > 0) ...[
+                                      SizedBox(height: 10 * scale),
+                                      Container(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 10 * scale,
+                                          vertical: 4 * scale,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white
+                                              .withValues(alpha: 0.06),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        child: Text(
+                                          '남는 돈 ${_formatNumber(_remainder!)}원',
+                                          style: TextStyle(
+                                            fontSize: 11 * scale,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.white60,
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -407,7 +479,7 @@ class _MainScreenState extends State<MainScreen> {
                     ),
                     child: SizedBox(
                       width: double.infinity,
-                      height: 48 * scale,
+                      height: 50 * scale,
                       child: ElevatedButton(
                         onPressed: _amount > 0 ? _calculate : null,
                         style: ElevatedButton.styleFrom(
@@ -415,12 +487,16 @@ class _MainScreenState extends State<MainScreen> {
                           foregroundColor: Colors.black87,
                           disabledBackgroundColor: const Color(0xFF0F3460),
                           disabledForegroundColor: Colors.white24,
+                          elevation: _amount > 0 ? 6 : 0,
+                          shadowColor: const Color(0xFFFFB300)
+                              .withValues(alpha: 0.5),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14),
+                            borderRadius: BorderRadius.circular(16),
                           ),
                           textStyle: TextStyle(
-                            fontSize: 16 * scale,
+                            fontSize: 17 * scale,
                             fontWeight: FontWeight.bold,
+                            letterSpacing: 0.3,
                           ),
                         ),
                         child: const Text('계산하기'),
@@ -479,26 +555,32 @@ class _MainScreenState extends State<MainScreen> {
     final isClear = key == 'C';
 
     return Expanded(
-      child: GestureDetector(
-        onTap: () => _onKeyTap(key),
-        behavior: HitTestBehavior.opaque,
-        child: Container(
-          height: 50 * scale,
-          alignment: Alignment.center,
-          child: isBackspace
-              ? Icon(
-                  Icons.backspace_outlined,
-                  color: Colors.white70,
-                  size: 22 * scale,
-                )
-              : Text(
-                  key,
-                  style: TextStyle(
-                    fontSize: (isClear ? 20 : 22) * scale,
-                    fontWeight: isClear ? FontWeight.w700 : FontWeight.w500,
-                    color: isClear ? Colors.redAccent.shade100 : Colors.white,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => _onKeyTap(key),
+          splashColor: Colors.white.withValues(alpha: 0.08),
+          highlightColor: Colors.white.withValues(alpha: 0.04),
+          child: Container(
+            height: 50 * scale,
+            alignment: Alignment.center,
+            child: isBackspace
+                ? Icon(
+                    Icons.backspace_outlined,
+                    color: Colors.white70,
+                    size: 22 * scale,
+                  )
+                : Text(
+                    key,
+                    style: TextStyle(
+                      fontSize: (isClear ? 20 : 22) * scale,
+                      fontWeight: isClear ? FontWeight.w700 : FontWeight.w500,
+                      color: isClear
+                          ? Colors.redAccent.shade100
+                          : Colors.white,
+                    ),
                   ),
-                ),
+          ),
         ),
       ),
     );
@@ -510,21 +592,39 @@ class _MainScreenState extends State<MainScreen> {
     required bool enabled,
     required double scale,
   }) {
-    return GestureDetector(
-      onTap: enabled ? onPressed : null,
-      child: Container(
-        width: 44 * scale,
-        height: 44 * scale,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: enabled
-              ? const Color(0xFFFFB300)
-              : const Color(0xFF0F3460),
-        ),
-        child: Icon(
-          icon,
-          size: 24 * scale,
-          color: enabled ? Colors.black87 : Colors.white24,
+    return Material(
+      color: Colors.transparent,
+      shape: const CircleBorder(),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: enabled ? onPressed : null,
+        splashColor: Colors.black.withValues(alpha: 0.12),
+        highlightColor: Colors.black.withValues(alpha: 0.06),
+        child: Container(
+          width: 44 * scale,
+          height: 44 * scale,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: enabled
+                ? const Color(0xFFFFB300)
+                : Colors.white.withValues(alpha: 0.06),
+            boxShadow: enabled
+                ? [
+                    BoxShadow(
+                      color: const Color(0xFFFFB300)
+                          .withValues(alpha: 0.25),
+                      blurRadius: 8,
+                      spreadRadius: -2,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
+                : null,
+          ),
+          child: Icon(
+            icon,
+            size: 24 * scale,
+            color: enabled ? Colors.black87 : Colors.white24,
+          ),
         ),
       ),
     );

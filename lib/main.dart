@@ -53,13 +53,13 @@ class _SplashScreenState extends State<SplashScreen>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 200),
     );
     _fadeOut = Tween<double>(begin: 1.0, end: 0.0).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeOut),
     );
 
-    Future.delayed(const Duration(milliseconds: 1500), () {
+    Future.delayed(const Duration(milliseconds: 600), () {
       _controller.forward().then((_) {
         if (mounted) {
           Navigator.of(context).pushReplacement(

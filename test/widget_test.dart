@@ -112,7 +112,7 @@ void main() {
 
     expect(find.text('1인당 금액'), findsOneWidget);
     expect(find.text('3,333원'), findsOneWidget);
-    expect(find.text('1원은 누가 낼래?'), findsOneWidget);
+    expect(find.text('남는 돈 1원'), findsOneWidget);
   });
 
   testWidgets('MainScreen: 나머지가 0이면 안내 텍스트가 보이지 않는다',

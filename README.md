@@ -2,6 +2,14 @@
 
 금액과 인원수만 입력하면 1인당 나눠낼 금액과 남는 돈을 바로 알려주는 Flutter 기반 모바일 앱.
 
+## 배포 정책
+
+**iOS-only 출시.** Android Play Console 등록은 보류 (강대종 2026-05-02 결정 — 핵심 앱만 출시, ₩30K 토큰 회피, 약먹자와 동일 정책).
+관련 메모: `feedback_app_release_strategy.md`.
+
+- iOS: App Store 출시 완료, AdMob 운영 ID (`ca-app-pub-7025432711849670~7679626181`) 적용
+- Android: 빌드는 가능하지만 Play 제출 안 함
+
 ## 주요 기능
 
 - **금액 입력**: 커스텀 숫자 키패드 (최대 10자리)로 빠른 입력

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'services/ads_service.dart';
+import 'theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,19 +17,7 @@ class DutchPayApp extends StatelessWidget {
     return MaterialApp(
       title: '더치페이 계산기',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        brightness: Brightness.dark,
-        scaffoldBackgroundColor: const Color(0xFF1A1A2E),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF16213E),
-          centerTitle: true,
-          elevation: 0,
-        ),
-        colorScheme: const ColorScheme.dark(
-          primary: Color(0xFFFFB300),
-          surface: Color(0xFF1A1A2E),
-        ),
-      ),
+      theme: AppTheme.light,
       home: const SplashScreen(),
     );
   }
@@ -85,7 +74,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.bg,
       body: FadeTransition(
         opacity: _fadeOut,
         child: Center(
@@ -96,8 +85,15 @@ class _SplashScreenState extends State<SplashScreen>
                 width: 100,
                 height: 100,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFB300),
+                  color: AppColors.primary,
                   borderRadius: BorderRadius.circular(24),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primary.withValues(alpha: 0.3),
+                      blurRadius: 24,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
                 ),
                 child: const Icon(
                   Icons.calculate_rounded,
@@ -111,7 +107,7 @@ class _SplashScreenState extends State<SplashScreen>
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF1A1A2E),
+                  color: AppColors.textStrong,
                 ),
               ),
             ],
@@ -247,7 +243,7 @@ class _MainScreenState extends State<MainScreen> {
                               style: TextStyle(
                                 fontSize: 12 * scale,
                                 fontWeight: FontWeight.w600,
-                                color: Colors.white38,
+                                color: AppColors.textFaint,
                                 letterSpacing: 0.5,
                               ),
                             ),
@@ -261,8 +257,8 @@ class _MainScreenState extends State<MainScreen> {
                                       style: TextStyle(
                                         fontSize: 32 * scale,
                                         fontWeight: FontWeight.w700,
-                                        color:
-                                            Colors.white.withValues(alpha: 0.18),
+                                        color: AppColors.textFaint
+                                            .withValues(alpha: 0.6),
                                         height: 1.0,
                                       ),
                                     )
@@ -271,7 +267,7 @@ class _MainScreenState extends State<MainScreen> {
                                       style: TextStyle(
                                         fontSize: 36 * scale,
                                         fontWeight: FontWeight.w800,
-                                        color: Colors.white,
+                                        color: AppColors.textStrong,
                                         letterSpacing: -0.8,
                                         height: 1.0,
                                       ),
@@ -293,7 +289,7 @@ class _MainScreenState extends State<MainScreen> {
                             style: TextStyle(
                               fontSize: 12 * scale,
                               fontWeight: FontWeight.w600,
-                              color: Colors.white38,
+                              color: AppColors.textFaint,
                               letterSpacing: 0.5,
                             ),
                           ),
@@ -304,11 +300,18 @@ class _MainScreenState extends State<MainScreen> {
                               vertical: 14 * scale,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.04),
+                              color: AppColors.surface,
                               borderRadius: BorderRadius.circular(18),
                               border: Border.all(
-                                color: Colors.white.withValues(alpha: 0.06),
+                                color: const Color(0xFFE5E7EB),
                               ),
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: AppColors.shadow,
+                                  blurRadius: 16,
+                                  offset: Offset(0, 4),
+                                ),
+                              ],
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -328,7 +331,7 @@ class _MainScreenState extends State<MainScreen> {
                                     style: TextStyle(
                                       fontSize: 30 * scale,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.white,
+                                      color: AppColors.textStrong,
                                       height: 1.0,
                                       letterSpacing: -0.5,
                                     ),
@@ -364,22 +367,22 @@ class _MainScreenState extends State<MainScreen> {
                                     begin: Alignment.topLeft,
                                     end: Alignment.bottomRight,
                                     colors: [
-                                      const Color(0xFFFFB300)
-                                          .withValues(alpha: 0.18),
-                                      const Color(0xFFFFB300)
-                                          .withValues(alpha: 0.06),
+                                      AppColors.primary
+                                          .withValues(alpha: 0.16),
+                                      AppColors.primary
+                                          .withValues(alpha: 0.05),
                                     ],
                                   ),
                                   borderRadius: BorderRadius.circular(20),
                                   border: Border.all(
-                                    color: const Color(0xFFFFB300)
-                                        .withValues(alpha: 0.45),
+                                    color: AppColors.primary
+                                        .withValues(alpha: 0.35),
                                     width: 1.2,
                                   ),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: const Color(0xFFFFB300)
-                                          .withValues(alpha: 0.18),
+                                      color: AppColors.primary
+                                          .withValues(alpha: 0.15),
                                       blurRadius: 18,
                                       spreadRadius: -4,
                                       offset: const Offset(0, 4),
@@ -396,8 +399,7 @@ class _MainScreenState extends State<MainScreen> {
                                         Icon(
                                           Icons.person_outline_rounded,
                                           size: 14 * scale,
-                                          color: const Color(0xFFFFB300)
-                                              .withValues(alpha: 0.9),
+                                          color: AppColors.primaryDark,
                                         ),
                                         SizedBox(width: 5 * scale),
                                         Text(
@@ -405,8 +407,7 @@ class _MainScreenState extends State<MainScreen> {
                                           style: TextStyle(
                                             fontSize: 12 * scale,
                                             fontWeight: FontWeight.w600,
-                                            color: const Color(0xFFFFB300)
-                                                .withValues(alpha: 0.9),
+                                            color: AppColors.primaryDark,
                                             letterSpacing: 0.5,
                                           ),
                                         ),
@@ -420,7 +421,7 @@ class _MainScreenState extends State<MainScreen> {
                                         style: TextStyle(
                                           fontSize: 38 * scale,
                                           fontWeight: FontWeight.w800,
-                                          color: const Color(0xFFFFD54F),
+                                          color: AppColors.primary,
                                           height: 1.0,
                                           letterSpacing: -1.0,
                                         ),
@@ -435,8 +436,7 @@ class _MainScreenState extends State<MainScreen> {
                                           vertical: 4 * scale,
                                         ),
                                         decoration: BoxDecoration(
-                                          color: Colors.white
-                                              .withValues(alpha: 0.06),
+                                          color: AppColors.fill,
                                           borderRadius:
                                               BorderRadius.circular(10),
                                         ),
@@ -445,7 +445,7 @@ class _MainScreenState extends State<MainScreen> {
                                           style: TextStyle(
                                             fontSize: 11 * scale,
                                             fontWeight: FontWeight.w600,
-                                            color: Colors.white60,
+                                            color: AppColors.textBody,
                                           ),
                                         ),
                                       ),
@@ -465,7 +465,16 @@ class _MainScreenState extends State<MainScreen> {
 
             // 하단 고정: 계산 버튼 + 키패드 (화면의 약 55%)
             Container(
-              color: const Color(0xFF16213E),
+              decoration: const BoxDecoration(
+                color: AppColors.surface,
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.shadow,
+                    blurRadius: 16,
+                    offset: Offset(0, -4),
+                  ),
+                ],
+              ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -483,13 +492,13 @@ class _MainScreenState extends State<MainScreen> {
                       child: ElevatedButton(
                         onPressed: _amount > 0 ? _calculate : null,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFFFB300),
-                          foregroundColor: Colors.black87,
-                          disabledBackgroundColor: const Color(0xFF0F3460),
-                          disabledForegroundColor: Colors.white24,
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: Colors.white,
+                          disabledBackgroundColor: AppColors.fill,
+                          disabledForegroundColor: AppColors.textFaint,
                           elevation: _amount > 0 ? 6 : 0,
-                          shadowColor: const Color(0xFFFFB300)
-                              .withValues(alpha: 0.5),
+                          shadowColor:
+                              AppColors.primary.withValues(alpha: 0.5),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
                           ),
@@ -530,7 +539,7 @@ class _MainScreenState extends State<MainScreen> {
   Widget _buildDivider() {
     return Container(
       height: 0.5,
-      color: Colors.white.withValues(alpha: 0.08),
+      color: AppColors.divider,
     );
   }
 
@@ -542,7 +551,7 @@ class _MainScreenState extends State<MainScreen> {
         children.add(Container(
           width: 0.5,
           height: rowHeight,
-          color: Colors.white.withValues(alpha: 0.08),
+          color: AppColors.divider,
         ));
       }
       children.add(_buildKeyButton(keys[i], scale));
@@ -559,15 +568,15 @@ class _MainScreenState extends State<MainScreen> {
         color: Colors.transparent,
         child: InkWell(
           onTap: () => _onKeyTap(key),
-          splashColor: Colors.white.withValues(alpha: 0.08),
-          highlightColor: Colors.white.withValues(alpha: 0.04),
+          splashColor: Colors.black.withValues(alpha: 0.08),
+          highlightColor: Colors.black.withValues(alpha: 0.04),
           child: Container(
             height: 50 * scale,
             alignment: Alignment.center,
             child: isBackspace
                 ? Icon(
                     Icons.backspace_outlined,
-                    color: Colors.white70,
+                    color: AppColors.textBody,
                     size: 22 * scale,
                   )
                 : Text(
@@ -576,8 +585,8 @@ class _MainScreenState extends State<MainScreen> {
                       fontSize: (isClear ? 20 : 22) * scale,
                       fontWeight: isClear ? FontWeight.w700 : FontWeight.w500,
                       color: isClear
-                          ? Colors.redAccent.shade100
-                          : Colors.white,
+                          ? AppColors.danger
+                          : AppColors.textStrong,
                     ),
                   ),
           ),
@@ -606,12 +615,12 @@ class _MainScreenState extends State<MainScreen> {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: enabled
-                ? const Color(0xFFFFB300)
-                : Colors.white.withValues(alpha: 0.06),
+                ? AppColors.primary
+                : AppColors.fill,
             boxShadow: enabled
                 ? [
                     BoxShadow(
-                      color: const Color(0xFFFFB300)
+                      color: AppColors.primary
                           .withValues(alpha: 0.25),
                       blurRadius: 8,
                       spreadRadius: -2,
@@ -623,7 +632,7 @@ class _MainScreenState extends State<MainScreen> {
           child: Icon(
             icon,
             size: 24 * scale,
-            color: enabled ? Colors.black87 : Colors.white24,
+            color: enabled ? Colors.white : AppColors.textFaint,
           ),
         ),
       ),

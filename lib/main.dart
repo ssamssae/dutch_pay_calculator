@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'services/ads_service.dart';
 import 'theme/app_theme.dart';
+import 'widgets/version_footer.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -214,6 +215,7 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ),
       ),
+      bottomNavigationBar: const VersionFooter(),
       body: SafeArea(
         top: false,
         child: Column(

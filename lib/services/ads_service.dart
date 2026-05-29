@@ -47,7 +47,6 @@ class AdaptiveBanner extends StatefulWidget {
 class _AdaptiveBannerState extends State<AdaptiveBanner> {
   BannerAd? _bannerAd;
   bool _loaded = false;
-  AdSize? _size;
 
   @override
   void didChangeDependencies() {
@@ -78,7 +77,6 @@ class _AdaptiveBannerState extends State<AdaptiveBanner> {
       ),
     );
 
-    setState(() => _size = size);
     await ad.load();
     if (!mounted) {
       ad.dispose();
@@ -95,16 +93,17 @@ class _AdaptiveBannerState extends State<AdaptiveBanner> {
 
   @override
   Widget build(BuildContext context) {
-    final size = _size;
-    if (!_loaded || _bannerAd == null || size == null) {
+    final ad = _bannerAd;
+    if (!_loaded || ad == null) {
       return const SizedBox.shrink();
     }
+    final size = ad.size;
     return SafeArea(
       top: false,
       child: SizedBox(
         width: size.width.toDouble(),
         height: size.height.toDouble(),
-        child: AdWidget(ad: _bannerAd!),
+        child: AdWidget(ad: ad),
       ),
     );
   }

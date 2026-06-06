@@ -113,6 +113,7 @@ void main() {
     expect(find.text('1인당 금액'), findsOneWidget);
     expect(find.text('3,333원'), findsOneWidget);
     expect(find.text('남는 돈 1원'), findsOneWidget);
+    expect(find.text('카톡으로 공유'), findsOneWidget);
   });
 
   testWidgets('MainScreen: 나머지가 0이면 안내 텍스트가 보이지 않는다',
@@ -134,6 +135,22 @@ void main() {
 
     expect(find.text('3,000원'), findsOneWidget);
     expect(find.textContaining('누가 낼래?'), findsNothing);
+  });
+
+  test('buildSettlementShareText formats a Kakao-friendly summary', () {
+    expect(
+      buildSettlementShareText(
+        amount: 12000,
+        personCount: 3,
+        perPerson: 4000,
+        remainder: 0,
+      ),
+      '더치페이 계산 결과\n'
+      '총 금액: 12,000원\n'
+      '인원수: 3명\n'
+      '1인당: 4,000원\n'
+      '남는 돈: 없음',
+    );
   });
 
   testWidgets('MainScreen: 금액이 0이면 계산하기 버튼이 비활성화된다',

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:share_plus/share_plus.dart';
 import 'services/ads_service.dart';
 import 'theme/app_theme.dart';
 import 'widgets/version_footer.dart';
@@ -163,16 +164,27 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
-  String _formatNumber(int number) {
-    final text = number.toString();
-    final buffer = StringBuffer();
-    for (var i = 0; i < text.length; i++) {
-      if (i > 0 && (text.length - i) % 3 == 0) {
-        buffer.write(',');
-      }
-      buffer.write(text[i]);
+  String buildShareText() {
+    return buildSettlementShareText(
+      amount: _amount,
+      personCount: _personCount,
+      perPerson: _perPerson,
+      remainder: _remainder,
+    );
+  }
+
+  Future<void> _shareResult() async {
+    final text = buildShareText();
+    if (text.isEmpty) return;
+
+    try {
+      await SharePlus.instance.share(ShareParams(text: text));
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('공유에 실패했습니다.')),
+      );
     }
-    return buffer.toString();
   }
 
   @override
@@ -338,8 +350,8 @@ class _MainScreenState extends State<MainScreen> {
                             : Container(
                                 width: double.infinity,
                                 padding: EdgeInsets.symmetric(
-                                  horizontal: 18 * scale,
-                                  vertical: 16 * scale,
+                                  horizontal: 16 * scale,
+                                  vertical: 12 * scale,
                                 ),
                                 decoration: BoxDecoration(
                                   gradient: LinearGradient(
@@ -368,68 +380,97 @@ class _MainScreenState extends State<MainScreen> {
                                     ),
                                   ],
                                 ),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          Icons.person_outline_rounded,
-                                          size: 14 * scale,
-                                          color: AppColors.primaryDark,
-                                        ),
-                                        SizedBox(width: 5 * scale),
-                                        Text(
-                                          '1인당 금액',
-                                          style: TextStyle(
-                                            fontSize: 12 * scale,
-                                            fontWeight: FontWeight.w600,
+                                child: SingleChildScrollView(
+                                  physics: const ClampingScrollPhysics(),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.person_outline_rounded,
+                                            size: 14 * scale,
                                             color: AppColors.primaryDark,
-                                            letterSpacing: 0.5,
+                                          ),
+                                          SizedBox(width: 5 * scale),
+                                          Text(
+                                            '1인당 금액',
+                                            style: TextStyle(
+                                              fontSize: 12 * scale,
+                                              fontWeight: FontWeight.w600,
+                                              color: AppColors.primaryDark,
+                                              letterSpacing: 0.5,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 6 * scale),
+                                      FittedBox(
+                                        fit: BoxFit.scaleDown,
+                                        child: Text(
+                                          '${_formatNumber(_perPerson!)}원',
+                                          style: TextStyle(
+                                            fontSize: 38 * scale,
+                                            fontWeight: FontWeight.w800,
+                                            color: AppColors.primary,
+                                            height: 1.0,
+                                            letterSpacing: -1.0,
+                                          ),
+                                        ),
+                                      ),
+                                      if (_remainder != null &&
+                                          _remainder! > 0) ...[
+                                        SizedBox(height: 8 * scale),
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 10 * scale,
+                                            vertical: 4 * scale,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: AppColors.fill,
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                          child: Text(
+                                            '남는 돈 ${_formatNumber(_remainder!)}원',
+                                            style: TextStyle(
+                                              fontSize: 11 * scale,
+                                              fontWeight: FontWeight.w600,
+                                              color: AppColors.textBody,
+                                            ),
                                           ),
                                         ),
                                       ],
-                                    ),
-                                    SizedBox(height: 8 * scale),
-                                    FittedBox(
-                                      fit: BoxFit.scaleDown,
-                                      child: Text(
-                                        '${_formatNumber(_perPerson!)}원',
-                                        style: TextStyle(
-                                          fontSize: 38 * scale,
-                                          fontWeight: FontWeight.w800,
-                                          color: AppColors.primary,
-                                          height: 1.0,
-                                          letterSpacing: -1.0,
-                                        ),
-                                      ),
-                                    ),
-                                    if (_remainder != null &&
-                                        _remainder! > 0) ...[
-                                      SizedBox(height: 10 * scale),
-                                      Container(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 10 * scale,
-                                          vertical: 4 * scale,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: AppColors.fill,
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                        child: Text(
-                                          '남는 돈 ${_formatNumber(_remainder!)}원',
-                                          style: TextStyle(
-                                            fontSize: 11 * scale,
-                                            fontWeight: FontWeight.w600,
-                                            color: AppColors.textBody,
+                                      SizedBox(height: 8 * scale),
+                                      SizedBox(
+                                        width: double.infinity,
+                                        height: 36 * scale,
+                                        child: FilledButton.icon(
+                                          onPressed: _shareResult,
+                                          icon: Icon(
+                                            Icons.share_rounded,
+                                            size: 16 * scale,
+                                          ),
+                                          label: const Text('카톡으로 공유'),
+                                          style: FilledButton.styleFrom(
+                                            backgroundColor:
+                                                AppColors.primaryDark,
+                                            foregroundColor: Colors.white,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(14),
+                                            ),
+                                            textStyle: TextStyle(
+                                              fontSize: 13 * scale,
+                                              fontWeight: FontWeight.w700,
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ],
-                                  ],
+                                  ),
                                 ),
                               ),
                       ),
@@ -617,4 +658,36 @@ class _MainScreenState extends State<MainScreen> {
       ),
     );
   }
+}
+
+String buildSettlementShareText({
+  required int amount,
+  required int personCount,
+  required int? perPerson,
+  required int? remainder,
+}) {
+  if (perPerson == null) return '';
+
+  final remainderText =
+      (remainder ?? 0) > 0 ? '${_formatNumber(remainder!)}원' : '없음';
+
+  return [
+    '더치페이 계산 결과',
+    '총 금액: ${_formatNumber(amount)}원',
+    '인원수: $personCount명',
+    '1인당: ${_formatNumber(perPerson)}원',
+    '남는 돈: $remainderText',
+  ].join('\n');
+}
+
+String _formatNumber(int number) {
+  final text = number.toString();
+  final buffer = StringBuffer();
+  for (var i = 0; i < text.length; i++) {
+    if (i > 0 && (text.length - i) % 3 == 0) {
+      buffer.write(',');
+    }
+    buffer.write(text[i]);
+  }
+  return buffer.toString();
 }

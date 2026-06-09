@@ -75,15 +75,20 @@ class _SplashScreenState extends State<SplashScreen> {
                 ],
               ),
               clipBehavior: Clip.antiAlias,
-              child: Image.asset(
-                'assets/images/app_logo.png',
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stack) => Container(
-                  color: AppColors.primary,
-                  child: const Icon(
-                    Icons.calculate_rounded,
-                    size: 56,
-                    color: Colors.white,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(24),
+                child: Image.asset(
+                  'assets/images/app_logo.png',
+                  width: 100,
+                  height: 100,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stack) => Container(
+                    color: AppColors.primary,
+                    child: const Icon(
+                      Icons.calculate_rounded,
+                      size: 56,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),

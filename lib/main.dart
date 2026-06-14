@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 import 'services/ads_service.dart';
+import 'services/iap_service.dart';
 import 'theme/app_theme.dart';
 import 'widgets/version_footer.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await AdsService.init();
+  await IapService.init();
   runApp(const DutchPayApp());
 }
 
@@ -215,6 +217,20 @@ class _MainScreenState extends State<MainScreen> {
             fontSize: 18 * scale,
           ),
         ),
+        actions: [
+          // 광고 제거 구매 버튼 — 이미 제거됐으면 숨김.
+          ValueListenableBuilder<bool>(
+            valueListenable: IapService.adsRemoved,
+            builder: (context, removed, _) {
+              if (removed) return const SizedBox.shrink();
+              return IconButton(
+                icon: const Icon(Icons.block),
+                tooltip: '광고 제거',
+                onPressed: IapService.buyRemoveAds,
+              );
+            },
+          ),
+        ],
       ),
       bottomNavigationBar: const VersionFooter(),
       body: SafeArea(

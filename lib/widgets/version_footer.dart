@@ -17,13 +17,17 @@ class VersionFooter extends StatelessWidget {
         final label = version.isEmpty ? '마이너스베타스튜디오' : 'v$version · 마이너스베타스튜디오';
         return Padding(
           padding: const EdgeInsets.only(top: 4, bottom: 4),
-          child: Text(
-            label,
-            style: const TextStyle(
-              fontSize: 10,
-              fontWeight: FontWeight.w500,
-              color: AppColors.textFaint,
-              letterSpacing: -0.1,
+          child: SizedBox(
+            width: double.infinity,
+            child: Text(
+              label,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.w500,
+                color: AppColors.textFaint,
+                letterSpacing: -0.1,
+              ),
             ),
           ),
         );

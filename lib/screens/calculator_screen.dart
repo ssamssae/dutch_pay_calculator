@@ -204,11 +204,11 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                               letterSpacing: 0.5,
                             ),
                           ),
-                          SizedBox(height: 8 * scale),
+                          SizedBox(height: 4 * scale),
                           Container(
                             padding: EdgeInsets.symmetric(
                               horizontal: 16 * scale,
-                              vertical: 11 * scale,
+                              vertical: 8 * scale,
                             ),
                             decoration: BoxDecoration(
                               color: AppColors.surface,

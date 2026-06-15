@@ -21,7 +21,7 @@ class DutchPayApp extends StatelessWidget {
     return MaterialApp(
       title: '더치페이 계산기',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.light,
+      theme: AppTheme.dark,
       home: const SplashScreen(),
     );
   }
@@ -316,13 +316,13 @@ class _MainScreenState extends State<MainScreen> {
                           Container(
                             padding: EdgeInsets.symmetric(
                               horizontal: 20 * scale,
-                              vertical: 14 * scale,
+                              vertical: 11 * scale,
                             ),
                             decoration: BoxDecoration(
                               color: AppColors.surface,
                               borderRadius: BorderRadius.circular(18),
                               border: Border.all(
-                                color: const Color(0xFFE5E7EB),
+                                color: AppColors.divider,
                               ),
                               boxShadow: const [
                                 BoxShadow(
@@ -371,7 +371,7 @@ class _MainScreenState extends State<MainScreen> {
 
                     // 결과 표시
                     Expanded(
-                      flex: 3,
+                      flex: 5,
                       child: Center(
                         child: _perPerson == null
                             ? const SizedBox.shrink()
@@ -530,13 +530,13 @@ class _MainScreenState extends State<MainScreen> {
                   Padding(
                     padding: EdgeInsets.fromLTRB(
                       16 * scale,
-                      10 * scale,
+                      8 * scale,
                       16 * scale,
-                      6 * scale,
+                      4 * scale,
                     ),
                     child: SizedBox(
                       width: double.infinity,
-                      height: 50 * scale,
+                      height: 46 * scale,
                       child: ElevatedButton(
                         onPressed: _amount > 0 ? _calculate : null,
                         style: ElevatedButton.styleFrom(
@@ -592,7 +592,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Widget _buildKeyRow(List<String> keys, double scale) {
-    final rowHeight = 50.0 * scale;
+    final rowHeight = 44.0 * scale;
     final children = <Widget>[];
     for (var i = 0; i < keys.length; i++) {
       if (i > 0) {
@@ -616,10 +616,10 @@ class _MainScreenState extends State<MainScreen> {
         color: Colors.transparent,
         child: InkWell(
           onTap: () => _onKeyTap(key),
-          splashColor: Colors.black.withValues(alpha: 0.08),
-          highlightColor: Colors.black.withValues(alpha: 0.04),
+          splashColor: Colors.white.withValues(alpha: 0.10),
+          highlightColor: Colors.white.withValues(alpha: 0.05),
           child: Container(
-            height: 50 * scale,
+            height: 44 * scale,
             alignment: Alignment.center,
             child: isBackspace
                 ? Icon(
@@ -655,8 +655,8 @@ class _MainScreenState extends State<MainScreen> {
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: enabled ? onPressed : null,
-        splashColor: Colors.black.withValues(alpha: 0.12),
-        highlightColor: Colors.black.withValues(alpha: 0.06),
+        splashColor: Colors.white.withValues(alpha: 0.14),
+        highlightColor: Colors.white.withValues(alpha: 0.07),
         child: Container(
           width: 44 * scale,
           height: 44 * scale,

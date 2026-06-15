@@ -122,7 +122,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
               );
             },
           ),
-          SizedBox(width: 4 * scale),
+          SizedBox(width: 12 * scale),
         ],
       ),
       body: SafeArea(
@@ -277,6 +277,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                       ),
                     ),
 
+                    // 인원수 박스와 결과 카드 사이 간격(타일 겹침 방지, 아니키 2026-06-16)
+                    SizedBox(height: 14 * scale),
+
                     // 결과 표시
                     Expanded(
                       flex: 5,
@@ -343,42 +346,53 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                         ],
                                       ),
                                       SizedBox(height: 6 * scale),
-                                      FittedBox(
-                                        fit: BoxFit.scaleDown,
-                                        child: Text(
-                                          '${_formatNumber(_perPerson!)}원',
-                                          style: TextStyle(
-                                            fontSize: 38 * scale,
-                                            fontWeight: FontWeight.w800,
-                                            color: AppColors.primary,
-                                            height: 1.0,
-                                            letterSpacing: -1.0,
-                                          ),
-                                        ),
-                                      ),
-                                      if (_remainder != null &&
-                                          _remainder! > 0) ...[
-                                        SizedBox(height: 8 * scale),
-                                        Container(
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: 10 * scale,
-                                            vertical: 4 * scale,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: AppColors.fill,
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                          ),
-                                          child: Text(
-                                            '남는 돈 ${_formatNumber(_remainder!)}원',
-                                            style: TextStyle(
-                                              fontSize: 11 * scale,
-                                              fontWeight: FontWeight.w600,
-                                              color: AppColors.textBody,
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Flexible(
+                                            child: FittedBox(
+                                              fit: BoxFit.scaleDown,
+                                              child: Text(
+                                                '${_formatNumber(_perPerson!)}원',
+                                                style: TextStyle(
+                                                  fontSize: 38 * scale,
+                                                  fontWeight: FontWeight.w800,
+                                                  color: AppColors.primary,
+                                                  height: 1.0,
+                                                  letterSpacing: -1.0,
+                                                ),
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                          // 남는 돈 — 1인당 금액 우측에 배치(아니키 2026-06-16)
+                                          if (_remainder != null &&
+                                              _remainder! > 0) ...[
+                                            SizedBox(width: 8 * scale),
+                                            Container(
+                                              padding: EdgeInsets.symmetric(
+                                                horizontal: 10 * scale,
+                                                vertical: 4 * scale,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                color: AppColors.fill,
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                              child: Text(
+                                                '남는 돈 ${_formatNumber(_remainder!)}원',
+                                                style: TextStyle(
+                                                  fontSize: 11 * scale,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: AppColors.textBody,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ],
+                                      ),
                                       SizedBox(height: 8 * scale),
                                       SizedBox(
                                         width: double.infinity,

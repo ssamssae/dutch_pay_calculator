@@ -8,6 +8,7 @@ import '../services/account_service.dart';
 import '../services/app_review_service.dart';
 import '../services/iap_service.dart';
 import '../theme/app_theme.dart';
+import '../widgets/version_footer.dart';
 import 'policy_screen.dart';
 
 /// 설정 화면 — 계좌번호 / 평가 / 피드백 / 광고제거 / 구매복원 / 약관 / 개인정보.
@@ -130,6 +131,10 @@ class SettingsScreen extends StatelessWidget {
                   const PolicyScreen(
                       title: '개인정보처리방침',
                       assetPath: 'docs/legal/privacy-policy.md'))),
+          const Padding(
+            padding: EdgeInsets.only(top: 24, bottom: 8),
+            child: VersionFooter(),
+          ),
         ],
       ),
     );

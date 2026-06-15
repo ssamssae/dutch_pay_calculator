@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../theme/app_theme.dart';
-import '../widgets/version_footer.dart';
 import 'calculator_screen.dart';
 import 'settings_screen.dart';
 
@@ -32,16 +31,11 @@ class _MainShellState extends State<MainShell> {
           SettingsScreen(),
         ],
       ),
-      bottomNavigationBar: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const VersionFooter(),
-          _BottomTabBar(
-            index: _navIndex,
-            tabs: _tabs,
-            onTap: (i) => setState(() => _navIndex = i),
-          ),
-        ],
+      // 버전 푸터는 계산기 탭에선 숨기고 설정 탭 하단에만 노출(아니키 2026-06-16).
+      bottomNavigationBar: _BottomTabBar(
+        index: _navIndex,
+        tabs: _tabs,
+        onTap: (i) => setState(() => _navIndex = i),
       ),
     );
   }

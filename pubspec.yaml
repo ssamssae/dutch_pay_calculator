@@ -23,7 +23,7 @@ dev_dependencies:
   flutter_launcher_icons: ^0.14.4
 
 flutter_launcher_icons:
-  image_path: "icon_design/icon3_master.png"
+  image_path: "icon_design/icon4_quadrant_master.png"
   android: true
   ios: true
   remove_alpha_ios: true

@@ -638,7 +638,8 @@ String buildSettlementShareText({
   if (account.trim().isNotEmpty) {
     lines.add('입금 계좌: ${account.trim()}');
   }
-  return lines.join('\n');
+  // 끝에 빈 줄/공백이 절대 안 붙도록 방어적으로 정리(아니키 공유 trailing 개행 지적).
+  return lines.join('\n').trimRight();
 }
 
 String _formatNumber(int number) {

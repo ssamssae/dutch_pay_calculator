@@ -142,8 +142,7 @@ class _MainScreenState extends State<MainScreen> {
           _digits += key;
         }
       }
-      _perPerson = null;
-      _remainder = null;
+      _recompute();
     });
   }
 
@@ -152,8 +151,7 @@ class _MainScreenState extends State<MainScreen> {
       HapticFeedback.selectionClick();
       setState(() {
         _personCount++;
-        _perPerson = null;
-        _remainder = null;
+        _recompute();
       });
     }
   }
@@ -163,19 +161,20 @@ class _MainScreenState extends State<MainScreen> {
       HapticFeedback.selectionClick();
       setState(() {
         _personCount--;
-        _perPerson = null;
-        _remainder = null;
+        _recompute();
       });
     }
   }
 
-  void _calculate() {
-    if (_amount <= 0) return;
-    HapticFeedback.mediumImpact();
-    setState(() {
+  // 실시간 계산 — 금액/인원 변경 시 즉시 갱신(계산하기 버튼 제거).
+  void _recompute() {
+    if (_amount > 0) {
       _perPerson = _amount ~/ _personCount;
       _remainder = _amount % _personCount;
-    });
+    } else {
+      _perPerson = null;
+      _remainder = null;
+    }
   }
 
   String buildShareText() {
@@ -526,41 +525,6 @@ class _MainScreenState extends State<MainScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // 계산하기 버튼
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(
-                      16 * scale,
-                      8 * scale,
-                      16 * scale,
-                      4 * scale,
-                    ),
-                    child: SizedBox(
-                      width: double.infinity,
-                      height: 46 * scale,
-                      child: ElevatedButton(
-                        onPressed: _amount > 0 ? _calculate : null,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          foregroundColor: Colors.white,
-                          disabledBackgroundColor: AppColors.fill,
-                          disabledForegroundColor: AppColors.textFaint,
-                          elevation: _amount > 0 ? 6 : 0,
-                          shadowColor:
-                              AppColors.primary.withValues(alpha: 0.5),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          textStyle: TextStyle(
-                            fontSize: 17 * scale,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 0.3,
-                          ),
-                        ),
-                        child: const Text('계산하기'),
-                      ),
-                    ),
-                  ),
-
                   // 커스텀 키패드 (SafeArea가 하단 padding 처리)
                   Column(
                     children: [

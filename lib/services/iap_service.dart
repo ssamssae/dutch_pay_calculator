@@ -55,6 +55,12 @@ class IapService {
     await _iap.buyNonConsumable(purchaseParam: param);
   }
 
+  /// 구매 복원 — 기기 변경/재설치 후 '광고 제거' 구매를 되살린다.
+  static Future<void> restorePurchases() async {
+    if (!await _iap.isAvailable()) return;
+    await _iap.restorePurchases();
+  }
+
   static Future<void> _onPurchaseUpdated(
     List<PurchaseDetails> purchases,
   ) async {

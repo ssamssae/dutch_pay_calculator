@@ -229,6 +229,7 @@ class _MainScreenState extends State<MainScreen> {
               );
             },
           ),
+          SizedBox(width: 4 * scale),
         ],
       ),
       bottomNavigationBar: const VersionFooter(),

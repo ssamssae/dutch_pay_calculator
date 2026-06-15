@@ -21,7 +21,7 @@ class DutchPayApp extends StatelessWidget {
     return MaterialApp(
       title: '더치페이 계산기',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.light,
+      theme: AppTheme.dark,
       home: const SplashScreen(),
     );
   }
@@ -322,7 +322,7 @@ class _MainScreenState extends State<MainScreen> {
                               color: AppColors.surface,
                               borderRadius: BorderRadius.circular(18),
                               border: Border.all(
-                                color: const Color(0xFFE5E7EB),
+                                color: AppColors.divider,
                               ),
                               boxShadow: const [
                                 BoxShadow(
@@ -616,8 +616,8 @@ class _MainScreenState extends State<MainScreen> {
         color: Colors.transparent,
         child: InkWell(
           onTap: () => _onKeyTap(key),
-          splashColor: Colors.black.withValues(alpha: 0.08),
-          highlightColor: Colors.black.withValues(alpha: 0.04),
+          splashColor: Colors.white.withValues(alpha: 0.10),
+          highlightColor: Colors.white.withValues(alpha: 0.05),
           child: Container(
             height: 44 * scale,
             alignment: Alignment.center,
@@ -655,8 +655,8 @@ class _MainScreenState extends State<MainScreen> {
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: enabled ? onPressed : null,
-        splashColor: Colors.black.withValues(alpha: 0.12),
-        highlightColor: Colors.black.withValues(alpha: 0.06),
+        splashColor: Colors.white.withValues(alpha: 0.14),
+        highlightColor: Colors.white.withValues(alpha: 0.07),
         child: Container(
           width: 44 * scale,
           height: 44 * scale,

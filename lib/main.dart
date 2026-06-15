@@ -22,6 +22,8 @@ class DutchPayApp extends StatelessWidget {
       title: '더치페이 계산기',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
+      themeMode: ThemeMode.dark,
       home: const SplashScreen(),
     );
   }
@@ -58,7 +60,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.bg,
+      backgroundColor: DarkColors.bgDeep,
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -70,8 +72,8 @@ class _SplashScreenState extends State<SplashScreen> {
                 borderRadius: BorderRadius.circular(24),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.15),
-                    blurRadius: 24,
+                    color: DarkColors.accent.withValues(alpha: 0.25),
+                    blurRadius: 32,
                     offset: const Offset(0, 8),
                   ),
                 ],
@@ -85,11 +87,11 @@ class _SplashScreenState extends State<SplashScreen> {
                   height: 100,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stack) => Container(
-                    color: AppColors.primary,
-                    child: const Icon(
+                    color: DarkColors.surface,
+                    child: Icon(
                       Icons.calculate_rounded,
                       size: 56,
-                      color: Colors.white,
+                      color: DarkColors.accent,
                     ),
                   ),
                 ),
@@ -101,7 +103,7 @@ class _SplashScreenState extends State<SplashScreen> {
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: AppColors.textStrong,
+                color: DarkColors.textPrimary,
               ),
             ),
           ],
@@ -208,13 +210,16 @@ class _MainScreenState extends State<MainScreen> {
     final scale = (mq.size.height / 800).clamp(0.72, 1.05);
 
     return Scaffold(
+      backgroundColor: DarkColors.bgDeep,
       appBar: AppBar(
+        backgroundColor: DarkColors.bgDeep,
         toolbarHeight: 48 * scale,
         title: Text(
           '더치페이 계산기',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 18 * scale,
+            color: DarkColors.textPrimary,
           ),
         ),
         actions: [
@@ -226,6 +231,7 @@ class _MainScreenState extends State<MainScreen> {
               return IconButton(
                 icon: const Icon(Icons.block),
                 tooltip: '광고 제거',
+                color: DarkColors.textSecondary,
                 onPressed: IapService.buyRemoveAds,
               );
             },
@@ -262,8 +268,8 @@ class _MainScreenState extends State<MainScreen> {
                               style: TextStyle(
                                 fontSize: 12 * scale,
                                 fontWeight: FontWeight.w600,
-                                color: AppColors.textFaint,
-                                letterSpacing: 0.5,
+                                color: DarkColors.textSecondary,
+                                letterSpacing: 0.8,
                               ),
                             ),
                             SizedBox(height: 6 * scale),
@@ -276,8 +282,7 @@ class _MainScreenState extends State<MainScreen> {
                                       style: TextStyle(
                                         fontSize: 32 * scale,
                                         fontWeight: FontWeight.w700,
-                                        color: AppColors.textFaint
-                                            .withValues(alpha: 0.6),
+                                        color: DarkColors.textFaint,
                                         height: 1.0,
                                       ),
                                     )
@@ -286,7 +291,7 @@ class _MainScreenState extends State<MainScreen> {
                                       style: TextStyle(
                                         fontSize: 36 * scale,
                                         fontWeight: FontWeight.w800,
-                                        color: AppColors.textStrong,
+                                        color: DarkColors.textPrimary,
                                         letterSpacing: -0.8,
                                         height: 1.0,
                                       ),
@@ -308,8 +313,8 @@ class _MainScreenState extends State<MainScreen> {
                             style: TextStyle(
                               fontSize: 12 * scale,
                               fontWeight: FontWeight.w600,
-                              color: AppColors.textFaint,
-                              letterSpacing: 0.5,
+                              color: DarkColors.textSecondary,
+                              letterSpacing: 0.8,
                             ),
                           ),
                           SizedBox(height: 8 * scale),
@@ -319,16 +324,16 @@ class _MainScreenState extends State<MainScreen> {
                               vertical: 14 * scale,
                             ),
                             decoration: BoxDecoration(
-                              color: AppColors.surface,
+                              color: DarkColors.surface,
                               borderRadius: BorderRadius.circular(18),
                               border: Border.all(
-                                color: const Color(0xFFE5E7EB),
+                                color: DarkColors.divider,
                               ),
-                              boxShadow: const [
+                              boxShadow: [
                                 BoxShadow(
-                                  color: AppColors.shadow,
+                                  color: DarkColors.shadow,
                                   blurRadius: 16,
-                                  offset: Offset(0, 4),
+                                  offset: const Offset(0, 4),
                                 ),
                               ],
                             ),
@@ -350,7 +355,7 @@ class _MainScreenState extends State<MainScreen> {
                                     style: TextStyle(
                                       fontSize: 30 * scale,
                                       fontWeight: FontWeight.bold,
-                                      color: AppColors.textStrong,
+                                      color: DarkColors.textPrimary,
                                       height: 1.0,
                                       letterSpacing: -0.5,
                                     ),
@@ -386,23 +391,19 @@ class _MainScreenState extends State<MainScreen> {
                                     begin: Alignment.topLeft,
                                     end: Alignment.bottomRight,
                                     colors: [
-                                      AppColors.primary
-                                          .withValues(alpha: 0.16),
-                                      AppColors.primary
-                                          .withValues(alpha: 0.05),
+                                      DarkColors.accentSoft,
+                                      DarkColors.surface,
                                     ],
                                   ),
                                   borderRadius: BorderRadius.circular(20),
                                   border: Border.all(
-                                    color: AppColors.primary
-                                        .withValues(alpha: 0.35),
+                                    color: DarkColors.accentBorder,
                                     width: 1.2,
                                   ),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: AppColors.primary
-                                          .withValues(alpha: 0.15),
-                                      blurRadius: 18,
+                                      color: DarkColors.accentGlow,
+                                      blurRadius: 24,
                                       spreadRadius: -4,
                                       offset: const Offset(0, 4),
                                     ),
@@ -420,7 +421,7 @@ class _MainScreenState extends State<MainScreen> {
                                           Icon(
                                             Icons.person_outline_rounded,
                                             size: 14 * scale,
-                                            color: AppColors.primaryDark,
+                                            color: DarkColors.accent,
                                           ),
                                           SizedBox(width: 5 * scale),
                                           Text(
@@ -428,23 +429,24 @@ class _MainScreenState extends State<MainScreen> {
                                             style: TextStyle(
                                               fontSize: 12 * scale,
                                               fontWeight: FontWeight.w600,
-                                              color: AppColors.primaryDark,
-                                              letterSpacing: 0.5,
+                                              color: DarkColors.textSecondary,
+                                              letterSpacing: 0.8,
                                             ),
                                           ),
                                         ],
                                       ),
                                       SizedBox(height: 6 * scale),
+                                      // 초대형 네온 숫자 — 화면 주인공 (Cash App / Revolut 식)
                                       FittedBox(
                                         fit: BoxFit.scaleDown,
                                         child: Text(
                                           '${_formatNumber(_perPerson!)}원',
                                           style: TextStyle(
-                                            fontSize: 38 * scale,
-                                            fontWeight: FontWeight.w800,
-                                            color: AppColors.primary,
+                                            fontSize: 64 * scale,
+                                            fontWeight: FontWeight.w700,
+                                            color: DarkColors.accent,
                                             height: 1.0,
-                                            letterSpacing: -1.0,
+                                            letterSpacing: -2.0,
                                           ),
                                         ),
                                       ),
@@ -457,7 +459,7 @@ class _MainScreenState extends State<MainScreen> {
                                             vertical: 4 * scale,
                                           ),
                                           decoration: BoxDecoration(
-                                            color: AppColors.fill,
+                                            color: DarkColors.surfaceElevated,
                                             borderRadius:
                                                 BorderRadius.circular(10),
                                           ),
@@ -466,26 +468,35 @@ class _MainScreenState extends State<MainScreen> {
                                             style: TextStyle(
                                               fontSize: 11 * scale,
                                               fontWeight: FontWeight.w600,
-                                              color: AppColors.textBody,
+                                              color: DarkColors.textSecondary,
+                                              letterSpacing: 0.4,
                                             ),
                                           ),
                                         ),
                                       ],
                                       SizedBox(height: 8 * scale),
+                                      // 공유 버튼: 고스트(테두리만) 스타일
                                       SizedBox(
                                         width: double.infinity,
                                         height: 36 * scale,
-                                        child: FilledButton.icon(
+                                        child: OutlinedButton.icon(
                                           onPressed: _shareResult,
                                           icon: Icon(
                                             Icons.share_rounded,
                                             size: 16 * scale,
+                                            color: DarkColors.accent,
                                           ),
-                                          label: const Text('카톡으로 공유'),
-                                          style: FilledButton.styleFrom(
-                                            backgroundColor:
-                                                AppColors.primaryDark,
-                                            foregroundColor: Colors.white,
+                                          label: Text(
+                                            '카톡으로 공유',
+                                            style: TextStyle(
+                                              color: DarkColors.accent,
+                                            ),
+                                          ),
+                                          style: OutlinedButton.styleFrom(
+                                            side: BorderSide(
+                                              color: DarkColors.accentBorder,
+                                              width: 1.2,
+                                            ),
                                             shape: RoundedRectangleBorder(
                                               borderRadius:
                                                   BorderRadius.circular(14),
@@ -513,20 +524,20 @@ class _MainScreenState extends State<MainScreen> {
 
             // 하단 고정: 계산 버튼 + 키패드 (화면의 약 55%)
             Container(
-              decoration: const BoxDecoration(
-                color: AppColors.surface,
+              decoration: BoxDecoration(
+                color: DarkColors.surface,
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.shadow,
+                    color: DarkColors.shadow,
                     blurRadius: 16,
-                    offset: Offset(0, -4),
+                    offset: const Offset(0, -4),
                   ),
                 ],
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // 계산하기 버튼
+                  // 계산하기 버튼 — 풀폭 알약형 네온 솔리드
                   Padding(
                     padding: EdgeInsets.fromLTRB(
                       16 * scale,
@@ -540,15 +551,14 @@ class _MainScreenState extends State<MainScreen> {
                       child: ElevatedButton(
                         onPressed: _amount > 0 ? _calculate : null,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          foregroundColor: Colors.white,
-                          disabledBackgroundColor: AppColors.fill,
-                          disabledForegroundColor: AppColors.textFaint,
-                          elevation: _amount > 0 ? 6 : 0,
-                          shadowColor:
-                              AppColors.primary.withValues(alpha: 0.5),
+                          backgroundColor: DarkColors.accent,
+                          foregroundColor: DarkColors.bgDeep,
+                          disabledBackgroundColor: DarkColors.surfaceElevated,
+                          disabledForegroundColor: DarkColors.textFaint,
+                          elevation: _amount > 0 ? 8 : 0,
+                          shadowColor: DarkColors.accent.withValues(alpha: 0.4),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
+                            borderRadius: BorderRadius.circular(25),
                           ),
                           textStyle: TextStyle(
                             fontSize: 17 * scale,
@@ -587,7 +597,7 @@ class _MainScreenState extends State<MainScreen> {
   Widget _buildDivider() {
     return Container(
       height: 0.5,
-      color: AppColors.divider,
+      color: DarkColors.divider,
     );
   }
 
@@ -599,7 +609,7 @@ class _MainScreenState extends State<MainScreen> {
         children.add(Container(
           width: 0.5,
           height: rowHeight,
-          color: AppColors.divider,
+          color: DarkColors.divider,
         ));
       }
       children.add(_buildKeyButton(keys[i], scale));
@@ -616,15 +626,15 @@ class _MainScreenState extends State<MainScreen> {
         color: Colors.transparent,
         child: InkWell(
           onTap: () => _onKeyTap(key),
-          splashColor: Colors.black.withValues(alpha: 0.08),
-          highlightColor: Colors.black.withValues(alpha: 0.04),
+          splashColor: DarkColors.splashLight,
+          highlightColor: DarkColors.highlightLight,
           child: Container(
             height: 50 * scale,
             alignment: Alignment.center,
             child: isBackspace
                 ? Icon(
                     Icons.backspace_outlined,
-                    color: AppColors.textBody,
+                    color: DarkColors.textSecondary,
                     size: 22 * scale,
                   )
                 : Text(
@@ -633,8 +643,8 @@ class _MainScreenState extends State<MainScreen> {
                       fontSize: (isClear ? 20 : 22) * scale,
                       fontWeight: isClear ? FontWeight.w700 : FontWeight.w500,
                       color: isClear
-                          ? AppColors.danger
-                          : AppColors.textStrong,
+                          ? DarkColors.danger
+                          : DarkColors.textPrimary,
                     ),
                   ),
           ),
@@ -655,24 +665,23 @@ class _MainScreenState extends State<MainScreen> {
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: enabled ? onPressed : null,
-        splashColor: Colors.black.withValues(alpha: 0.12),
-        highlightColor: Colors.black.withValues(alpha: 0.06),
+        splashColor: DarkColors.splashLight,
+        highlightColor: DarkColors.highlightLight,
         child: Container(
           width: 44 * scale,
           height: 44 * scale,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: enabled
-                ? AppColors.primary
-                : AppColors.fill,
+                ? DarkColors.accent
+                : DarkColors.surfaceElevated,
             boxShadow: enabled
                 ? [
                     BoxShadow(
-                      color: AppColors.primary
-                          .withValues(alpha: 0.25),
-                      blurRadius: 8,
+                      color: DarkColors.accent.withValues(alpha: 0.30),
+                      blurRadius: 12,
                       spreadRadius: -2,
-                      offset: const Offset(0, 2),
+                      offset: const Offset(0, 3),
                     ),
                   ]
                 : null,
@@ -680,7 +689,7 @@ class _MainScreenState extends State<MainScreen> {
           child: Icon(
             icon,
             size: 24 * scale,
-            color: enabled ? Colors.white : AppColors.textFaint,
+            color: enabled ? DarkColors.bgDeep : DarkColors.textFaint,
           ),
         ),
       ),

@@ -316,7 +316,7 @@ class _MainScreenState extends State<MainScreen> {
                           Container(
                             padding: EdgeInsets.symmetric(
                               horizontal: 20 * scale,
-                              vertical: 14 * scale,
+                              vertical: 11 * scale,
                             ),
                             decoration: BoxDecoration(
                               color: AppColors.surface,
@@ -371,7 +371,7 @@ class _MainScreenState extends State<MainScreen> {
 
                     // 결과 표시
                     Expanded(
-                      flex: 3,
+                      flex: 5,
                       child: Center(
                         child: _perPerson == null
                             ? const SizedBox.shrink()
@@ -530,13 +530,13 @@ class _MainScreenState extends State<MainScreen> {
                   Padding(
                     padding: EdgeInsets.fromLTRB(
                       16 * scale,
-                      10 * scale,
+                      8 * scale,
                       16 * scale,
-                      6 * scale,
+                      4 * scale,
                     ),
                     child: SizedBox(
                       width: double.infinity,
-                      height: 50 * scale,
+                      height: 46 * scale,
                       child: ElevatedButton(
                         onPressed: _amount > 0 ? _calculate : null,
                         style: ElevatedButton.styleFrom(
@@ -592,7 +592,7 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Widget _buildKeyRow(List<String> keys, double scale) {
-    final rowHeight = 50.0 * scale;
+    final rowHeight = 44.0 * scale;
     final children = <Widget>[];
     for (var i = 0; i < keys.length; i++) {
       if (i > 0) {
@@ -619,7 +619,7 @@ class _MainScreenState extends State<MainScreen> {
           splashColor: Colors.black.withValues(alpha: 0.08),
           highlightColor: Colors.black.withValues(alpha: 0.04),
           child: Container(
-            height: 50 * scale,
+            height: 44 * scale,
             alignment: Alignment.center,
             child: isBackspace
                 ? Icon(

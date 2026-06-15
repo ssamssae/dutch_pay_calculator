@@ -4,6 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
+import 'iap_service.dart';
+
 /// AdMob 초기화 + 광고 단위 ID 관리.
 ///
 /// 출시 전 AdMob 콘솔에서 더치페이 앱 등록 + 배너 광고단위 생성 후,
@@ -51,6 +53,7 @@ class _AdaptiveBannerState extends State<AdaptiveBanner> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    if (IapService.adsRemoved.value) return; // 광고 제거 구매됨 → 로드 안 함
     if (_bannerAd == null) _loadAd();
   }
 
@@ -92,18 +95,23 @@ class _AdaptiveBannerState extends State<AdaptiveBanner> {
 
   @override
   Widget build(BuildContext context) {
-    final ad = _bannerAd;
-    if (!_loaded || ad == null) {
-      return const SizedBox.shrink();
-    }
-    final size = ad.size;
-    return SafeArea(
-      top: false,
-      child: SizedBox(
-        width: size.width.toDouble(),
-        height: size.height.toDouble(),
-        child: AdWidget(ad: ad),
-      ),
+    return ValueListenableBuilder<bool>(
+      valueListenable: IapService.adsRemoved,
+      builder: (context, removed, _) {
+        final ad = _bannerAd;
+        if (removed || !_loaded || ad == null) {
+          return const SizedBox.shrink();
+        }
+        final size = ad.size;
+        return SafeArea(
+          top: false,
+          child: SizedBox(
+            width: size.width.toDouble(),
+            height: size.height.toDouble(),
+            child: AdWidget(ad: ad),
+          ),
+        );
+      },
     );
   }
 }

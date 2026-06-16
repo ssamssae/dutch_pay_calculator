@@ -334,7 +334,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                           Text(
                                             '1인당 금액',
                                             style: TextStyle(
-                                              fontSize: 10 * scale,
+                                              fontSize: 12 * scale,
                                               fontWeight: FontWeight.w600,
                                               color: DarkColors.textSecondary,
                                               letterSpacing: 0.8,
@@ -349,7 +349,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                         child: Text(
                                           '${_formatNumber(_perPerson!)}원',
                                           style: TextStyle(
-                                            fontSize: 56 * scale,
+                                            fontSize: 54 * scale,
                                             fontWeight: FontWeight.w700,
                                             color: DarkColors.accent,
                                             height: 1.0,

@@ -25,7 +25,7 @@ class VersionFooter extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.w500,
-                color: AppColors.textFaint,
+                color: DarkColors.textFaint,
                 letterSpacing: -0.1,
               ),
             ),

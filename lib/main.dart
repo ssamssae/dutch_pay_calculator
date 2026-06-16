@@ -23,6 +23,8 @@ class DutchPayApp extends StatelessWidget {
       title: '더치페이 계산기',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.dark,
+      darkTheme: AppTheme.dark,
+      themeMode: ThemeMode.dark,
       home: const SplashScreen(),
     );
   }
@@ -60,7 +62,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: DarkColors.bgDeep,
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -72,8 +74,8 @@ class _SplashScreenState extends State<SplashScreen> {
                 borderRadius: BorderRadius.circular(24),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.15),
-                    blurRadius: 24,
+                    color: DarkColors.accent.withValues(alpha: 0.25),
+                    blurRadius: 32,
                     offset: const Offset(0, 8),
                   ),
                 ],
@@ -87,11 +89,11 @@ class _SplashScreenState extends State<SplashScreen> {
                   height: 100,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stack) => Container(
-                    color: AppColors.primary,
+                    color: DarkColors.surface,
                     child: const Icon(
                       Icons.calculate_rounded,
                       size: 56,
-                      color: Colors.white,
+                      color: DarkColors.accent,
                     ),
                   ),
                 ),
@@ -103,7 +105,7 @@ class _SplashScreenState extends State<SplashScreen> {
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: AppColors.textStrong,
+                color: DarkColors.textPrimary,
               ),
             ),
           ],

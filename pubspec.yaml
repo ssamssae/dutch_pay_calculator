@@ -2,7 +2,7 @@ name: dutch_pay_calculator
 description: "금액과 인원수를 입력하면 1인당 금액과 나머지를 계산해주는 더치페이 계산기 (Flutter)."
 publish_to: 'none'
 
-version: 1.0.6+11
+version: 1.0.7+12
 
 environment:
   sdk: ^3.10.4

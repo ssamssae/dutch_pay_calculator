@@ -334,7 +334,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                           Text(
                                             '1인당 금액',
                                             style: TextStyle(
-                                              fontSize: 12 * scale,
+                                              fontSize: 10 * scale,
                                               fontWeight: FontWeight.w600,
                                               color: DarkColors.textSecondary,
                                               letterSpacing: 0.8,
@@ -357,27 +357,30 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                           ),
                                         ),
                                       ),
-                                      // 남는 돈 칩 — 네온 숫자 아래 별도 행
+                                      // 남는 돈 칩 — 네온 숫자 아래 우측 정렬 (아니키 2026-06-16)
                                       if (_remainder != null &&
                                           _remainder! > 0) ...[
                                         SizedBox(height: 8 * scale),
-                                        Container(
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: 10 * scale,
-                                            vertical: 4 * scale,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: DarkColors.surfaceElevated,
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                          ),
-                                          child: Text(
-                                            '남는 돈 ${_formatNumber(_remainder!)}원',
-                                            style: TextStyle(
-                                              fontSize: 11 * scale,
-                                              fontWeight: FontWeight.w600,
-                                              color: DarkColors.textSecondary,
-                                              letterSpacing: 0.4,
+                                        Align(
+                                          alignment: Alignment.centerRight,
+                                          child: Container(
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 10 * scale,
+                                              vertical: 4 * scale,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: DarkColors.surfaceElevated,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            child: Text(
+                                              '남는 돈 ${_formatNumber(_remainder!)}원',
+                                              style: TextStyle(
+                                                fontSize: 11 * scale,
+                                                fontWeight: FontWeight.w600,
+                                                color: DarkColors.textSecondary,
+                                                letterSpacing: 0.4,
+                                              ),
                                             ),
                                           ),
                                         ),

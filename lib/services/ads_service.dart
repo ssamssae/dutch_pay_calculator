@@ -27,7 +27,7 @@ class AdsService {
   static String get bannerAdUnitId {
     if (kDebugMode) return _testBannerUnitId;
     if (Platform.isIOS) return _realIosBannerUnitId;
-    return _testBannerUnitId;
+    return _realAndroidBannerUnitId;
   }
 
   static String get _testBannerUnitId {
@@ -37,6 +37,9 @@ class AdsService {
 
   // iOS 운영 ID — 2026-05-12 AdMob 콘솔 발급 (dutch_banner_ios).
   static const _realIosBannerUnitId = 'ca-app-pub-7025432711849670/6556140410';
+
+  // Android 운영 ID — 2026-06-16 AdMob 콘솔 발급 (dutch_banner_android).
+  static const _realAndroidBannerUnitId = 'ca-app-pub-7025432711849670/5996031899';
 }
 
 class AdaptiveBanner extends StatefulWidget {

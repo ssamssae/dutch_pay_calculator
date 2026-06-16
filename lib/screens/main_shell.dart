@@ -61,8 +61,8 @@ class _BottomTabBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-        color: AppColors.surface,
-        border: Border(top: BorderSide(color: AppColors.divider, width: 1)),
+        color: DarkColors.surface,
+        border: Border(top: BorderSide(color: DarkColors.divider, width: 1)),
       ),
       child: SafeArea(
         top: false,
@@ -101,7 +101,7 @@ class _Tab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = selected ? AppColors.primary : AppColors.textFaint;
+    final color = selected ? DarkColors.accent : DarkColors.textFaint;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),

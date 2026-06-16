@@ -158,7 +158,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                 letterSpacing: 0.8,
                               ),
                             ),
-                            SizedBox(height: 6 * scale),
+                            SizedBox(height: 3 * scale),
                             FittedBox(
                               fit: BoxFit.scaleDown,
                               alignment: Alignment.centerLeft,
@@ -168,7 +168,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                       style: TextStyle(
                                         fontSize: 32 * scale,
                                         fontWeight: FontWeight.w700,
-                                        color: AppColors.textFaint
+                                        color: DarkColors.textFaint
                                             .withValues(alpha: 0.6),
                                         height: 1.0,
                                       ),
@@ -176,9 +176,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                   : Text(
                                       '${_formatNumber(_amount)}원',
                                       style: TextStyle(
-                                        fontSize: 36 * scale,
+                                        fontSize: 32 * scale,
                                         fontWeight: FontWeight.w800,
-                                        color: AppColors.textStrong,
+                                        color: DarkColors.textPrimary,
                                         letterSpacing: -0.8,
                                         height: 1.0,
                                       ),
@@ -211,14 +211,14 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                               vertical: 8 * scale,
                             ),
                             decoration: BoxDecoration(
-                              color: AppColors.surface,
+                              color: DarkColors.surface,
                               borderRadius: BorderRadius.circular(18),
                               border: Border.all(
-                                color: AppColors.divider,
+                                color: DarkColors.divider,
                               ),
                               boxShadow: const [
                                 BoxShadow(
-                                  color: AppColors.shadow,
+                                  color: DarkColors.shadow,
                                   blurRadius: 16,
                                   offset: Offset(0, 4),
                                 ),
@@ -250,7 +250,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                     style: TextStyle(
                                       fontSize: 28 * scale,
                                       fontWeight: FontWeight.bold,
-                                      color: AppColors.textStrong,
+                                      color: DarkColors.textPrimary,
                                       height: 1.0,
                                       letterSpacing: -0.5,
                                     ),
@@ -348,7 +348,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                         child: Text(
                                           '${_formatNumber(_perPerson!)}원',
                                           style: TextStyle(
-                                            fontSize: 64 * scale,
+                                            fontSize: 56 * scale,
                                             fontWeight: FontWeight.w700,
                                             color: DarkColors.accent,
                                             height: 1.0,
@@ -432,10 +432,10 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
             // 하단 고정: 키패드
             Container(
               decoration: const BoxDecoration(
-                color: AppColors.surface,
+                color: DarkColors.surface,
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.shadow,
+                    color: DarkColors.shadow,
                     blurRadius: 16,
                     offset: Offset(0, -4),
                   ),
@@ -469,7 +469,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   Widget _buildDivider() {
     return Container(
       height: 0.5,
-      color: AppColors.divider,
+      color: DarkColors.divider,
     );
   }
 
@@ -481,7 +481,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         children.add(Container(
           width: 0.5,
           height: rowHeight,
-          color: AppColors.divider,
+          color: DarkColors.divider,
         ));
       }
       children.add(_buildKeyButton(keys[i], scale));
@@ -506,7 +506,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
             child: isBackspace
                 ? Icon(
                     Icons.backspace_outlined,
-                    color: AppColors.textBody,
+                    color: DarkColors.textSecondary,
                     size: 22 * scale,
                   )
                 : Text(
@@ -515,8 +515,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                       fontSize: (isClear ? 20 : 22) * scale,
                       fontWeight: isClear ? FontWeight.w700 : FontWeight.w500,
                       color: isClear
-                          ? AppColors.danger
-                          : AppColors.textStrong,
+                          ? DarkColors.danger
+                          : DarkColors.textPrimary,
                     ),
                   ),
           ),
@@ -545,12 +545,12 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
             color: enabled
-                ? AppColors.primary.withValues(alpha: 0.16)
-                : AppColors.fill,
+                ? DarkColors.accent.withValues(alpha: 0.16)
+                : DarkColors.surfaceElevated,
             border: Border.all(
               color: enabled
-                  ? AppColors.primary.withValues(alpha: 0.4)
-                  : AppColors.divider,
+                  ? DarkColors.accent.withValues(alpha: 0.4)
+                  : DarkColors.divider,
             ),
           ),
           child: Text(
@@ -558,7 +558,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
             style: TextStyle(
               fontSize: 14 * scale,
               fontWeight: FontWeight.w700,
-              color: enabled ? AppColors.primaryDark : AppColors.textFaint,
+              color: enabled ? DarkColors.accent : DarkColors.textFaint,
               letterSpacing: -0.3,
             ),
           ),
@@ -587,8 +587,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: enabled
-                ? AppColors.primary
-                : AppColors.fill,
+                ? DarkColors.accent
+                : DarkColors.surfaceElevated,
             boxShadow: enabled
                 ? [
                     BoxShadow(

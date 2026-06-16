@@ -69,7 +69,7 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.bg,
+      backgroundColor: DarkColors.bgDeep,
       appBar: AppBar(title: const Text('설정')),
       body: ListView(
         padding: const EdgeInsets.only(top: 8),
@@ -80,7 +80,7 @@ class SettingsScreen extends StatelessWidget {
               context,
               icon: Icons.account_balance_wallet_outlined,
               label: '입금 계좌번호',
-              iconColor: AppColors.primary,
+              iconColor: DarkColors.accent,
               sub: account.isEmpty ? '공유 시 함께 보낼 계좌를 등록하세요' : account,
               onTap: () => editAccount(context),
             ),
@@ -92,7 +92,7 @@ class SettingsScreen extends StatelessWidget {
               return _tile(context,
                   icon: Icons.block_outlined,
                   label: '광고 제거',
-                  iconColor: AppColors.primary,
+                  iconColor: DarkColors.accent,
                   onTap: IapService.buyRemoveAds);
             },
           ),

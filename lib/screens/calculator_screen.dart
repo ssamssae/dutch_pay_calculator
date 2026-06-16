@@ -154,8 +154,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                               style: TextStyle(
                                 fontSize: 12 * scale,
                                 fontWeight: FontWeight.w600,
-                                color: AppColors.textFaint,
-                                letterSpacing: 0.5,
+                                color: DarkColors.textSecondary,
+                                letterSpacing: 0.8,
                               ),
                             ),
                             SizedBox(height: 6 * scale),
@@ -200,8 +200,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                             style: TextStyle(
                               fontSize: 12 * scale,
                               fontWeight: FontWeight.w600,
-                              color: AppColors.textFaint,
-                              letterSpacing: 0.5,
+                              color: DarkColors.textSecondary,
+                              letterSpacing: 0.8,
                             ),
                           ),
                           SizedBox(height: 4 * scale),
@@ -297,23 +297,19 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                     begin: Alignment.topLeft,
                                     end: Alignment.bottomRight,
                                     colors: [
-                                      AppColors.primary
-                                          .withValues(alpha: 0.16),
-                                      AppColors.primary
-                                          .withValues(alpha: 0.05),
+                                      DarkColors.accentSoft,
+                                      DarkColors.surface,
                                     ],
                                   ),
                                   borderRadius: BorderRadius.circular(20),
                                   border: Border.all(
-                                    color: AppColors.primary
-                                        .withValues(alpha: 0.35),
+                                    color: DarkColors.accentBorder,
                                     width: 1.2,
                                   ),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: AppColors.primary
-                                          .withValues(alpha: 0.15),
-                                      blurRadius: 18,
+                                      color: DarkColors.accentGlow,
+                                      blurRadius: 24,
                                       spreadRadius: -4,
                                       offset: const Offset(0, 4),
                                     ),
@@ -331,7 +327,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                           Icon(
                                             Icons.person_outline_rounded,
                                             size: 14 * scale,
-                                            color: AppColors.primaryDark,
+                                            color: DarkColors.accent,
                                           ),
                                           SizedBox(width: 5 * scale),
                                           Text(
@@ -339,75 +335,75 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                             style: TextStyle(
                                               fontSize: 12 * scale,
                                               fontWeight: FontWeight.w600,
-                                              color: AppColors.primaryDark,
-                                              letterSpacing: 0.5,
+                                              color: DarkColors.textSecondary,
+                                              letterSpacing: 0.8,
                                             ),
                                           ),
                                         ],
                                       ),
                                       SizedBox(height: 6 * scale),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Flexible(
-                                            child: FittedBox(
-                                              fit: BoxFit.scaleDown,
-                                              child: Text(
-                                                '${_formatNumber(_perPerson!)}원',
-                                                style: TextStyle(
-                                                  fontSize: 38 * scale,
-                                                  fontWeight: FontWeight.w800,
-                                                  color: AppColors.primary,
-                                                  height: 1.0,
-                                                  letterSpacing: -1.0,
-                                                ),
-                                              ),
+                                      // 초대형 네온 숫자 — 화면 주인공 (CashApp / Revolut 식)
+                                      FittedBox(
+                                        fit: BoxFit.scaleDown,
+                                        child: Text(
+                                          '${_formatNumber(_perPerson!)}원',
+                                          style: TextStyle(
+                                            fontSize: 64 * scale,
+                                            fontWeight: FontWeight.w700,
+                                            color: DarkColors.accent,
+                                            height: 1.0,
+                                            letterSpacing: -2.0,
+                                          ),
+                                        ),
+                                      ),
+                                      // 남는 돈 칩 — 네온 숫자 아래 별도 행
+                                      if (_remainder != null &&
+                                          _remainder! > 0) ...[
+                                        SizedBox(height: 8 * scale),
+                                        Container(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 10 * scale,
+                                            vertical: 4 * scale,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: DarkColors.surfaceElevated,
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                          child: Text(
+                                            '남는 돈 ${_formatNumber(_remainder!)}원',
+                                            style: TextStyle(
+                                              fontSize: 11 * scale,
+                                              fontWeight: FontWeight.w600,
+                                              color: DarkColors.textSecondary,
+                                              letterSpacing: 0.4,
                                             ),
                                           ),
-                                          // 남는 돈 — 1인당 금액 우측에 배치(아니키 2026-06-16)
-                                          if (_remainder != null &&
-                                              _remainder! > 0) ...[
-                                            SizedBox(width: 8 * scale),
-                                            Container(
-                                              padding: EdgeInsets.symmetric(
-                                                horizontal: 10 * scale,
-                                                vertical: 4 * scale,
-                                              ),
-                                              decoration: BoxDecoration(
-                                                color: AppColors.fill,
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                              child: Text(
-                                                '남는 돈 ${_formatNumber(_remainder!)}원',
-                                                style: TextStyle(
-                                                  fontSize: 11 * scale,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: AppColors.textBody,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                       SizedBox(height: 8 * scale),
+                                      // 공유 버튼: 고스트(테두리만) 스타일
                                       SizedBox(
                                         width: double.infinity,
                                         height: 36 * scale,
-                                        child: FilledButton.icon(
+                                        child: OutlinedButton.icon(
                                           onPressed: _shareResult,
                                           icon: Icon(
                                             Icons.share_rounded,
                                             size: 16 * scale,
+                                            color: DarkColors.accent,
                                           ),
-                                          label: const Text('카톡으로 공유'),
-                                          style: FilledButton.styleFrom(
-                                            backgroundColor:
-                                                AppColors.primaryDark,
-                                            foregroundColor: Colors.white,
+                                          label: Text(
+                                            '카톡으로 공유',
+                                            style: TextStyle(
+                                              color: DarkColors.accent,
+                                            ),
+                                          ),
+                                          style: OutlinedButton.styleFrom(
+                                            side: BorderSide(
+                                              color: DarkColors.accentBorder,
+                                              width: 1.2,
+                                            ),
                                             shape: RoundedRectangleBorder(
                                               borderRadius:
                                                   BorderRadius.circular(14),
@@ -502,8 +498,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         color: Colors.transparent,
         child: InkWell(
           onTap: () => _onKeyTap(key),
-          splashColor: Colors.white.withValues(alpha: 0.10),
-          highlightColor: Colors.white.withValues(alpha: 0.05),
+          splashColor: DarkColors.splashLight,
+          highlightColor: DarkColors.highlightLight,
           child: Container(
             height: 44 * scale,
             alignment: Alignment.center,
@@ -583,8 +579,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: enabled ? onPressed : null,
-        splashColor: Colors.white.withValues(alpha: 0.14),
-        highlightColor: Colors.white.withValues(alpha: 0.07),
+        splashColor: DarkColors.splashLight,
+        highlightColor: DarkColors.highlightLight,
         child: Container(
           width: 44 * scale,
           height: 44 * scale,
@@ -596,11 +592,10 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
             boxShadow: enabled
                 ? [
                     BoxShadow(
-                      color: AppColors.primary
-                          .withValues(alpha: 0.25),
-                      blurRadius: 8,
+                      color: DarkColors.accent.withValues(alpha: 0.30),
+                      blurRadius: 12,
                       spreadRadius: -2,
-                      offset: const Offset(0, 2),
+                      offset: const Offset(0, 3),
                     ),
                   ]
                 : null,
@@ -608,7 +603,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           child: Icon(
             icon,
             size: 24 * scale,
-            color: enabled ? Colors.white : AppColors.textFaint,
+            color: enabled ? DarkColors.bgDeep : DarkColors.textFaint,
           ),
         ),
       ),

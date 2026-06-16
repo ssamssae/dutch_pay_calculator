@@ -193,6 +193,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                     Expanded(
                       flex: 3,
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(

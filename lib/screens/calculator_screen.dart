@@ -87,9 +87,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       await SharePlus.instance.share(ShareParams(text: text));
     } catch (_) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('공유에 실패했습니다.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('공유에 실패했습니다.')));
     }
   }
 
@@ -104,10 +104,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         toolbarHeight: 48 * scale,
         title: Text(
           '더치페이 계산기',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 18 * scale,
-          ),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18 * scale),
         ),
         actions: [
           // 광고 제거 구매 버튼 — 이미 제거됐으면 숨김.
@@ -168,8 +165,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                       style: TextStyle(
                                         fontSize: 32 * scale,
                                         fontWeight: FontWeight.w700,
-                                        color: DarkColors.textFaint
-                                            .withValues(alpha: 0.6),
+                                        color: DarkColors.textFaint.withValues(
+                                          alpha: 0.6,
+                                        ),
                                         height: 1.0,
                                       ),
                                     )
@@ -214,9 +212,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                             decoration: BoxDecoration(
                               color: DarkColors.surface,
                               borderRadius: BorderRadius.circular(18),
-                              border: Border.all(
-                                color: DarkColors.divider,
-                              ),
+                              border: Border.all(color: DarkColors.divider),
                               boxShadow: const [
                                 BoxShadow(
                                   color: DarkColors.shadow,
@@ -287,141 +283,147 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                       child: Center(
                         child: _perPerson == null
                             ? const SizedBox.shrink()
-                            : Container(
-                                width: double.infinity,
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 16 * scale,
-                                  vertical: 12 * scale,
-                                ),
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: [
-                                      DarkColors.accentSoft,
-                                      DarkColors.surface,
-                                    ],
-                                  ),
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(
-                                    color: DarkColors.accentBorder,
-                                    width: 1.2,
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: DarkColors.accentGlow,
-                                      blurRadius: 24,
-                                      spreadRadius: -4,
-                                      offset: const Offset(0, 4),
+                            : Stack(
+                                clipBehavior: Clip.none,
+                                children: [
+                                  Container(
+                                    width: double.infinity,
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 16 * scale,
+                                      vertical: 9 * scale,
                                     ),
-                                  ],
-                                ),
-                                child: SingleChildScrollView(
-                                  physics: const ClampingScrollPhysics(),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: [
+                                          DarkColors.accentSoft,
+                                          DarkColors.surface,
+                                        ],
+                                      ),
+                                      borderRadius: BorderRadius.circular(20),
+                                      border: Border.all(
+                                        color: DarkColors.accentBorder,
+                                        width: 1.2,
+                                      ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: DarkColors.accentGlow,
+                                          blurRadius: 24,
+                                          spreadRadius: -4,
+                                          offset: const Offset(0, 4),
+                                        ),
+                                      ],
+                                    ),
+                                    child: SingleChildScrollView(
+                                      physics: const ClampingScrollPhysics(),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
                                         children: [
-                                          Icon(
-                                            Icons.person_outline_rounded,
-                                            size: 14 * scale,
-                                            color: DarkColors.accent,
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                Icons.person_outline_rounded,
+                                                size: 14 * scale,
+                                                color: DarkColors.accent,
+                                              ),
+                                              SizedBox(width: 5 * scale),
+                                              Text(
+                                                '1인당 금액',
+                                                style: TextStyle(
+                                                  fontSize: 12 * scale,
+                                                  fontWeight: FontWeight.w600,
+                                                  color:
+                                                      DarkColors.textSecondary,
+                                                  letterSpacing: 0.8,
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                          SizedBox(width: 5 * scale),
-                                          Text(
-                                            '1인당 금액',
-                                            style: TextStyle(
-                                              fontSize: 12 * scale,
-                                              fontWeight: FontWeight.w600,
-                                              color: DarkColors.textSecondary,
-                                              letterSpacing: 0.8,
+                                          SizedBox(height: 4 * scale),
+                                          // 초대형 네온 숫자 — 화면 주인공 (CashApp / Revolut 식)
+                                          FittedBox(
+                                            fit: BoxFit.scaleDown,
+                                            child: Text(
+                                              '${_formatNumber(_perPerson!)}원',
+                                              style: TextStyle(
+                                                fontSize: 44 * scale,
+                                                fontWeight: FontWeight.w700,
+                                                color: DarkColors.accent,
+                                                height: 1.0,
+                                                letterSpacing: -2.0,
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(height: 6 * scale),
+                                          // 공유 버튼: 고스트(테두리만) 스타일
+                                          SizedBox(
+                                            width: double.infinity,
+                                            height: 36 * scale,
+                                            child: ElevatedButton.icon(
+                                              onPressed: _shareResult,
+                                              icon: Icon(
+                                                Icons.share_rounded,
+                                                size: 16 * scale,
+                                                color: const Color(0xFF191919),
+                                              ),
+                                              label: Text(
+                                                '카톡으로 공유',
+                                                style: TextStyle(
+                                                  color: const Color(
+                                                    0xFF191919,
+                                                  ),
+                                                ),
+                                              ),
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: const Color(
+                                                  0xFFFEE500,
+                                                ),
+                                                elevation: 0,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(14),
+                                                ),
+                                                textStyle: TextStyle(
+                                                  fontSize: 13 * scale,
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                              ),
                                             ),
                                           ),
                                         ],
                                       ),
-                                      SizedBox(height: 6 * scale),
-                                      // 초대형 네온 숫자 — 화면 주인공 (CashApp / Revolut 식)
-                                      FittedBox(
-                                        fit: BoxFit.scaleDown,
-                                        child: Text(
-                                          '${_formatNumber(_perPerson!)}원',
-                                          style: TextStyle(
-                                            fontSize: 54 * scale,
-                                            fontWeight: FontWeight.w700,
-                                            color: DarkColors.accent,
-                                            height: 1.0,
-                                            letterSpacing: -2.0,
-                                          ),
-                                        ),
-                                      ),
-                                      // 남는 돈 칩 — 네온 숫자 아래 우측 정렬 (아니키 2026-06-16)
-                                      if (_remainder != null &&
-                                          _remainder! > 0) ...[
-                                        SizedBox(height: 8 * scale),
-                                        Align(
-                                          alignment: Alignment.centerRight,
-                                          child: Container(
-                                            padding: EdgeInsets.symmetric(
-                                              horizontal: 10 * scale,
-                                              vertical: 4 * scale,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: DarkColors.surfaceElevated,
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                            ),
-                                            child: Text(
-                                              '남는 돈 ${_formatNumber(_remainder!)}원',
-                                              style: TextStyle(
-                                                fontSize: 11 * scale,
-                                                fontWeight: FontWeight.w600,
-                                                color: DarkColors.textSecondary,
-                                                letterSpacing: 0.4,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                      SizedBox(height: 8 * scale),
-                                      // 공유 버튼: 고스트(테두리만) 스타일
-                                      SizedBox(
-                                        width: double.infinity,
-                                        height: 36 * scale,
-                                        child: OutlinedButton.icon(
-                                          onPressed: _shareResult,
-                                          icon: Icon(
-                                            Icons.share_rounded,
-                                            size: 16 * scale,
-                                            color: DarkColors.accent,
-                                          ),
-                                          label: Text(
-                                            '카톡으로 공유',
-                                            style: TextStyle(
-                                              color: DarkColors.accent,
-                                            ),
-                                          ),
-                                          style: OutlinedButton.styleFrom(
-                                            side: BorderSide(
-                                              color: DarkColors.accentBorder,
-                                              width: 1.2,
-                                            ),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(14),
-                                            ),
-                                            textStyle: TextStyle(
-                                              fontSize: 13 * scale,
-                                              fontWeight: FontWeight.w700,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                                    ),
                                   ),
-                                ),
+                                  if (_remainder != null && _remainder! > 0)
+                                    Positioned(
+                                      top: 10 * scale,
+                                      right: 10 * scale,
+                                      child: Container(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 10 * scale,
+                                          vertical: 4 * scale,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: DarkColors.surfaceElevated,
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          '남는 돈 ${_formatNumber(_remainder!)}원',
+                                          style: TextStyle(
+                                            fontSize: 11 * scale,
+                                            fontWeight: FontWeight.w600,
+                                            color: DarkColors.textSecondary,
+                                            letterSpacing: 0.4,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                ],
                               ),
                       ),
                     ),
@@ -471,10 +473,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   }
 
   Widget _buildDivider() {
-    return Container(
-      height: 0.5,
-      color: DarkColors.divider,
-    );
+    return Container(height: 0.5, color: DarkColors.divider);
   }
 
   Widget _buildKeyRow(List<String> keys, double scale) {
@@ -482,11 +481,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     final children = <Widget>[];
     for (var i = 0; i < keys.length; i++) {
       if (i > 0) {
-        children.add(Container(
-          width: 0.5,
-          height: rowHeight,
-          color: DarkColors.divider,
-        ));
+        children.add(
+          Container(width: 0.5, height: rowHeight, color: DarkColors.divider),
+        );
       }
       children.add(_buildKeyButton(keys[i], scale));
     }
@@ -590,9 +587,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           height: 44 * scale,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: enabled
-                ? DarkColors.accent
-                : DarkColors.surfaceElevated,
+            color: enabled ? DarkColors.accent : DarkColors.surfaceElevated,
             boxShadow: enabled
                 ? [
                     BoxShadow(
@@ -624,8 +619,9 @@ String buildSettlementShareText({
 }) {
   if (perPerson == null) return '';
 
-  final remainderText =
-      (remainder ?? 0) > 0 ? '${_formatNumber(remainder!)}원' : '없음';
+  final remainderText = (remainder ?? 0) > 0
+      ? '${_formatNumber(remainder!)}원'
+      : '없음';
 
   final lines = [
     '더치페이 계산 결과',

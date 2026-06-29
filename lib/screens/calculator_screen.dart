@@ -234,6 +234,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                 SizedBox(width: 8 * scale),
                                 _buildCircleButton(
                                   icon: Icons.remove,
+                                  tooltip: '1명 줄이기',
                                   onPressed: () => _changeCount(-1),
                                   enabled: _personCount > 1,
                                   scale: scale,
@@ -255,6 +256,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                 ),
                                 _buildCircleButton(
                                   icon: Icons.add,
+                                  tooltip: '1명 늘리기',
                                   onPressed: () => _changeCount(1),
                                   enabled: _personCount < 100,
                                   scale: scale,
@@ -493,36 +495,43 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   Widget _buildKeyButton(String key, double scale) {
     final isBackspace = key == '⌫';
     final isClear = key == 'C';
+    final tooltip = isBackspace
+        ? '한 자리 지우기'
+        : isClear
+        ? '금액 전체 지우기'
+        : null;
 
-    return Expanded(
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () => _onKeyTap(key),
-          splashColor: DarkColors.splashLight,
-          highlightColor: DarkColors.highlightLight,
-          child: Container(
-            height: 44 * scale,
-            alignment: Alignment.center,
-            child: isBackspace
-                ? Icon(
-                    Icons.backspace_outlined,
-                    color: DarkColors.textSecondary,
-                    size: 22 * scale,
-                  )
-                : Text(
-                    key,
-                    style: TextStyle(
-                      fontSize: (isClear ? 20 : 22) * scale,
-                      fontWeight: isClear ? FontWeight.w700 : FontWeight.w500,
-                      color: isClear
-                          ? DarkColors.danger
-                          : DarkColors.textPrimary,
-                    ),
+    final button = Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => _onKeyTap(key),
+        splashColor: DarkColors.splashLight,
+        highlightColor: DarkColors.highlightLight,
+        child: Container(
+          height: 44 * scale,
+          alignment: Alignment.center,
+          child: isBackspace
+              ? Icon(
+                  Icons.backspace_outlined,
+                  color: DarkColors.textSecondary,
+                  size: 22 * scale,
+                )
+              : Text(
+                  key,
+                  style: TextStyle(
+                    fontSize: (isClear ? 20 : 22) * scale,
+                    fontWeight: isClear ? FontWeight.w700 : FontWeight.w500,
+                    color: isClear ? DarkColors.danger : DarkColors.textPrimary,
                   ),
-          ),
+                ),
         ),
       ),
+    );
+
+    return Expanded(
+      child: tooltip == null
+          ? button
+          : Tooltip(message: tooltip, child: button),
     );
   }
 
@@ -570,39 +579,43 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
 
   Widget _buildCircleButton({
     required IconData icon,
+    required String tooltip,
     required VoidCallback onPressed,
     required bool enabled,
     required double scale,
   }) {
-    return Material(
-      color: Colors.transparent,
-      shape: const CircleBorder(),
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: enabled ? onPressed : null,
-        splashColor: DarkColors.splashLight,
-        highlightColor: DarkColors.highlightLight,
-        child: Container(
-          width: 44 * scale,
-          height: 44 * scale,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: enabled ? DarkColors.accent : DarkColors.surfaceElevated,
-            boxShadow: enabled
-                ? [
-                    BoxShadow(
-                      color: DarkColors.accent.withValues(alpha: 0.30),
-                      blurRadius: 12,
-                      spreadRadius: -2,
-                      offset: const Offset(0, 3),
-                    ),
-                  ]
-                : null,
-          ),
-          child: Icon(
-            icon,
-            size: 24 * scale,
-            color: enabled ? DarkColors.bgDeep : DarkColors.textFaint,
+    return Tooltip(
+      message: tooltip,
+      child: Material(
+        color: Colors.transparent,
+        shape: const CircleBorder(),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: enabled ? onPressed : null,
+          splashColor: DarkColors.splashLight,
+          highlightColor: DarkColors.highlightLight,
+          child: Container(
+            width: 44 * scale,
+            height: 44 * scale,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: enabled ? DarkColors.accent : DarkColors.surfaceElevated,
+              boxShadow: enabled
+                  ? [
+                      BoxShadow(
+                        color: DarkColors.accent.withValues(alpha: 0.30),
+                        blurRadius: 12,
+                        spreadRadius: -2,
+                        offset: const Offset(0, 3),
+                      ),
+                    ]
+                  : null,
+            ),
+            child: Icon(
+              icon,
+              size: 24 * scale,
+              color: enabled ? DarkColors.bgDeep : DarkColors.textFaint,
+            ),
           ),
         ),
       ),

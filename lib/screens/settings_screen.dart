@@ -178,6 +178,7 @@ class SettingsScreen extends StatelessWidget {
 Future<bool> editAccount(BuildContext context) async {
   final controller =
       TextEditingController(text: AccountService.account.value);
+  final hasExistingAccount = AccountService.hasAccount;
   final saved = await showDialog<bool>(
     context: context,
     builder: (ctx) {
@@ -193,6 +194,14 @@ Future<bool> editAccount(BuildContext context) async {
           onSubmitted: (_) => Navigator.of(ctx).pop(true),
         ),
         actions: [
+          if (hasExistingAccount)
+            TextButton(
+              onPressed: () {
+                controller.clear();
+                Navigator.of(ctx).pop(true);
+              },
+              child: const Text('삭제'),
+            ),
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
             child: const Text('취소'),

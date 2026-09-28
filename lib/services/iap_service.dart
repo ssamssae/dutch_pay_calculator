@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'purchase_restore.dart';
+export 'purchase_restore.dart' show RestoreResult;
+
 import 'package:flutter/foundation.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -14,8 +17,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// 스코프라 `remove_ads`, iOS(ASC)는 productId 가 개발자계정 전역 유일이라 reverse-DNS
 /// 네임스페이스 `com.daejongkang.dutchpay.remove_ads` 를 쓴다 (메모요가 `remove_ads` 선점).
 class IapService {
-  static final String removeAdsProductId =
-      Platform.isIOS ? 'com.daejongkang.dutchpay.remove_ads' : 'remove_ads';
+  static final String removeAdsProductId = Platform.isIOS
+      ? 'com.daejongkang.dutchpay.remove_ads'
+      : 'remove_ads';
   static const String _prefsKey = 'iap_ads_removed';
 
   /// 광고 제거 여부. ValueListenableBuilder 로 구독해 구매 즉시 UI 반영.
@@ -56,9 +60,20 @@ class IapService {
   }
 
   /// 구매 복원 — 기기 변경/재설치 후 '광고 제거' 구매를 되살린다.
-  static Future<void> restorePurchases() async {
-    if (!await _iap.isAvailable()) return;
-    await _iap.restorePurchases();
+  static final ValueNotifier<bool> restoring = ValueNotifier<bool>(false);
+
+  static Future<RestoreResult> restorePurchases() async {
+    restoring.value = true;
+    try {
+      return await restorePurchase(
+        productId: removeAdsProductId,
+        purchases: _iap.purchaseStream,
+        isAvailable: _iap.isAvailable,
+        requestRestore: _iap.restorePurchases,
+      );
+    } finally {
+      restoring.value = false;
+    }
   }
 
   static Future<void> _onPurchaseUpdated(

@@ -96,17 +96,23 @@ class SettingsScreen extends StatelessWidget {
                   onTap: IapService.buyRemoveAds);
             },
           ),
-          _tile(context,
+          ValueListenableBuilder<bool>(
+            valueListenable: IapService.restoring,
+            builder: (context, restoring, _) => _tile(
+              context,
               icon: Icons.restore,
-              label: '구매 복원',
+              label: restoring ? '구매 내역 확인 중…' : '구매 복원',
               onTap: () async {
-                await IapService.restorePurchases();
+                if (IapService.restoring.value) return;
+                final result = await IapService.restorePurchases();
                 if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('구매 내역을 복원했습니다')),
-                  );
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(result.message)));
                 }
-              }),
+              },
+            ),
+          ),
           _tile(context,
               icon: Icons.star_rate_outlined,
               label: '앱 평가하기',

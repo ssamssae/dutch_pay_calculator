@@ -46,3 +46,5 @@ flutter test
 ## 라이선스
 
 Private project. `publish_to: 'none'` 로 pub.dev 업로드 차단되어 있음.
+
+기능 확인 경로: [docs/feature-map.md](docs/feature-map.md)

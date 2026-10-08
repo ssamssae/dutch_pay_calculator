@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
@@ -6,6 +7,7 @@ import '../services/account_service.dart';
 import '../services/ads_service.dart';
 import '../services/iap_service.dart';
 import '../theme/app_theme.dart';
+import '../widgets/web_app_notice.dart';
 import 'settings_screen.dart';
 
 /// 계산기 탭 — 금액 입력 → 인원수 조정 → 1인당 금액 실시간 표시 → 카톡 공유.
@@ -83,8 +85,39 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     );
     if (text.isEmpty) return;
 
+    if (kIsWeb) {
+      await _shareOnWeb(text);
+      return;
+    }
+
     try {
       await SharePlus.instance.share(ShareParams(text: text));
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('공유에 실패했습니다.')));
+    }
+  }
+
+  /// 웹: Web Share API 가 되면 그걸 쓰고, 안 되면 결과 텍스트를 클립보드에 복사한다.
+  /// (share_plus 의 mailto 폴백은 끈다 — 데스크톱에서 메일 앱이 뜨는 걸 막기 위해)
+  Future<void> _shareOnWeb(String text) async {
+    try {
+      // mailto 폴백을 끄면 Web Share 실패 시 예외가 난다(성공·취소는 정상 반환).
+      await SharePlus.instance.share(
+        ShareParams(text: text, mailToFallbackEnabled: false),
+      );
+      return;
+    } catch (_) {
+      // Web Share 미지원/거부 → 클립보드 복사로 폴백
+    }
+    try {
+      await Clipboard.setData(ClipboardData(text: text));
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('정산 결과를 복사했어요. 카톡에 붙여넣기 하세요.')),
+      );
     } catch (_) {
       if (!mounted) return;
       ScaffoldMessenger.of(
@@ -108,17 +141,19 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         ),
         actions: [
           // 광고 제거 구매 버튼 — 이미 제거됐으면 숨김.
-          ValueListenableBuilder<bool>(
-            valueListenable: IapService.adsRemoved,
-            builder: (context, removed, _) {
-              if (removed) return const SizedBox.shrink();
-              return IconButton(
-                icon: const Icon(Icons.block),
-                tooltip: '광고 제거',
-                onPressed: IapService.buyRemoveAds,
-              );
-            },
-          ),
+          // 웹은 광고·인앱결제가 없으므로 광고 제거 버튼을 숨긴다.
+          if (!kIsWeb)
+            ValueListenableBuilder<bool>(
+              valueListenable: IapService.adsRemoved,
+              builder: (context, removed, _) {
+                if (removed) return const SizedBox.shrink();
+                return IconButton(
+                  icon: const Icon(Icons.block),
+                  tooltip: '광고 제거',
+                  onPressed: IapService.buyRemoveAds,
+                );
+              },
+            ),
           SizedBox(width: 12 * scale),
         ],
       ),
@@ -434,8 +469,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
               ),
             ),
 
-            // 광고 배너 (키패드 위)
-            const AdaptiveBanner(),
+            // 광고 배너 (키패드 위). 웹은 광고 대신 앱 설치 안내.
+            if (kIsWeb) const WebAppNotice() else const AdaptiveBanner(),
 
             // 하단 고정: 키패드
             Container(

@@ -1,9 +1,9 @@
-import 'dart:io';
-
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../platform/device_label.dart';
 import '../services/account_service.dart';
 import '../services/app_review_service.dart';
 import '../services/iap_service.dart';
@@ -34,8 +34,7 @@ class SettingsScreen extends StatelessWidget {
       final info = await PackageInfo.fromPlatform();
       version = 'v${info.version} (${info.buildNumber})';
     } catch (_) {}
-    final device =
-        '${Platform.operatingSystem} ${Platform.operatingSystemVersion}';
+    final device = deviceLabel();
     final body = '\n\n\n--- 아래 정보는 문제 해결에 도움이 돼요 (지워도 됩니다) ---\n'
         '앱: 더치페이 계산기 $version\n'
         '기기: $device';
@@ -85,34 +84,37 @@ class SettingsScreen extends StatelessWidget {
               onTap: () => editAccount(context),
             ),
           ),
-          ValueListenableBuilder<bool>(
-            valueListenable: IapService.adsRemoved,
-            builder: (context, removed, _) {
-              if (removed) return const SizedBox.shrink();
-              return _tile(context,
-                  icon: Icons.block_outlined,
-                  label: '광고 제거',
-                  iconColor: DarkColors.accent,
-                  onTap: IapService.buyRemoveAds);
-            },
-          ),
-          ValueListenableBuilder<bool>(
-            valueListenable: IapService.restoring,
-            builder: (context, restoring, _) => _tile(
-              context,
-              icon: Icons.restore,
-              label: restoring ? '구매 내역 확인 중…' : '구매 복원',
-              onTap: () async {
-                if (IapService.restoring.value) return;
-                final result = await IapService.restorePurchases();
-                if (context.mounted) {
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(SnackBar(content: Text(result.message)));
-                }
+          // 웹은 광고·인앱결제가 없으므로 광고 제거/구매 복원을 숨긴다.
+          if (!kIsWeb)
+            ValueListenableBuilder<bool>(
+              valueListenable: IapService.adsRemoved,
+              builder: (context, removed, _) {
+                if (removed) return const SizedBox.shrink();
+                return _tile(context,
+                    icon: Icons.block_outlined,
+                    label: '광고 제거',
+                    iconColor: DarkColors.accent,
+                    onTap: IapService.buyRemoveAds);
               },
             ),
-          ),
+          if (!kIsWeb)
+            ValueListenableBuilder<bool>(
+              valueListenable: IapService.restoring,
+              builder: (context, restoring, _) => _tile(
+                context,
+                icon: Icons.restore,
+                label: restoring ? '구매 내역 확인 중…' : '구매 복원',
+                onTap: () async {
+                  if (IapService.restoring.value) return;
+                  final result = await IapService.restorePurchases();
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text(result.message)));
+                  }
+                },
+              ),
+            ),
           _tile(context,
               icon: Icons.star_rate_outlined,
               label: '앱 평가하기',

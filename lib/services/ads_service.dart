@@ -1,5 +1,3 @@
-import 'dart:io' show Platform;
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -15,7 +13,8 @@ class AdsService {
   static bool _initialized = false;
 
   static Future<void> init() async {
-    if (_initialized) return;
+    // 웹은 AdMob 미지원 — 초기화하지 않는다.
+    if (kIsWeb || _initialized) return;
     try {
       await MobileAds.instance.initialize();
       _initialized = true;
@@ -26,12 +25,16 @@ class AdsService {
 
   static String get bannerAdUnitId {
     if (kDebugMode) return _testBannerUnitId;
-    if (Platform.isIOS) return _realIosBannerUnitId;
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      return _realIosBannerUnitId;
+    }
     return _realAndroidBannerUnitId;
   }
 
   static String get _testBannerUnitId {
-    if (Platform.isAndroid) return 'ca-app-pub-3940256099942544/6300978111';
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      return 'ca-app-pub-3940256099942544/6300978111';
+    }
     return 'ca-app-pub-3940256099942544/2934735716';
   }
 
@@ -39,7 +42,8 @@ class AdsService {
   static const _realIosBannerUnitId = 'ca-app-pub-7025432711849670/6556140410';
 
   // Android 운영 ID — 2026-06-16 AdMob 콘솔 발급 (dutch_banner_android).
-  static const _realAndroidBannerUnitId = 'ca-app-pub-7025432711849670/5996031899';
+  static const _realAndroidBannerUnitId =
+      'ca-app-pub-7025432711849670/5996031899';
 }
 
 class AdaptiveBanner extends StatefulWidget {
@@ -56,6 +60,7 @@ class _AdaptiveBannerState extends State<AdaptiveBanner> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    if (kIsWeb) return; // 웹은 광고 없음
     if (IapService.adsRemoved.value) return; // 광고 제거 구매됨 → 로드 안 함
     if (_bannerAd == null) _loadAd();
   }
@@ -98,6 +103,7 @@ class _AdaptiveBannerState extends State<AdaptiveBanner> {
 
   @override
   Widget build(BuildContext context) {
+    if (kIsWeb) return const SizedBox.shrink();
     return ValueListenableBuilder<bool>(
       valueListenable: IapService.adsRemoved,
       builder: (context, removed, _) {

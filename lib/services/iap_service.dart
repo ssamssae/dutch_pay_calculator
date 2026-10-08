@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'purchase_restore.dart';
 export 'purchase_restore.dart' show RestoreResult;
@@ -17,7 +16,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 /// 스코프라 `remove_ads`, iOS(ASC)는 productId 가 개발자계정 전역 유일이라 reverse-DNS
 /// 네임스페이스 `com.daejongkang.dutchpay.remove_ads` 를 쓴다 (메모요가 `remove_ads` 선점).
 class IapService {
-  static final String removeAdsProductId = Platform.isIOS
+  static final String removeAdsProductId =
+      !kIsWeb && defaultTargetPlatform == TargetPlatform.iOS
       ? 'com.daejongkang.dutchpay.remove_ads'
       : 'remove_ads';
   static const String _prefsKey = 'iap_ads_removed';
@@ -30,6 +30,8 @@ class IapService {
 
   /// 앱 시작 시 1회 호출. persist 값 복원 + 구매 스트림 구독 + 기존 구매 복원.
   static Future<void> init() async {
+    // 웹은 인앱결제 미지원 — 광고도 없으므로 구독하지 않는다.
+    if (kIsWeb) return;
     final prefs = await SharedPreferences.getInstance();
     adsRemoved.value = prefs.getBool(_prefsKey) ?? false;
 
@@ -47,7 +49,7 @@ class IapService {
 
   /// 광고 제거 구매 시작. 이미 제거됐으면 no-op.
   static Future<void> buyRemoveAds() async {
-    if (adsRemoved.value) return;
+    if (kIsWeb || adsRemoved.value) return;
     if (!await _iap.isAvailable()) return;
 
     final response = await _iap.queryProductDetails({removeAdsProductId});
@@ -63,6 +65,7 @@ class IapService {
   static final ValueNotifier<bool> restoring = ValueNotifier<bool>(false);
 
   static Future<RestoreResult> restorePurchases() async {
+    if (kIsWeb) return RestoreResult.unavailable;
     restoring.value = true;
     try {
       return await restorePurchase(

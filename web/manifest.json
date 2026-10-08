@@ -1,11 +1,11 @@
 {
-    "name": "dutch_pay_calculator",
-    "short_name": "dutch_pay_calculator",
+    "name": "더치페이",
+    "short_name": "더치페이",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#0A1422",
+    "theme_color": "#0A1422",
+    "description": "금액과 인원수만 넣으면 1인당 금액을 바로 계산하는 더치페이 계산기",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

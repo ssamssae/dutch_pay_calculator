@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../theme/app_theme.dart';
 import 'calculator_screen.dart';
+import 'ladder_tab.dart';
 import 'settings_screen.dart';
 
-/// 앱 쉘 — 하단 푸터 탭바(계산기 / 설정)가 모든 화면에서 상시 유지된다.
-/// 두 탭은 IndexedStack 으로 전환해 각자 상태를 보존한다. (T-260616-03 #5)
+/// 앱 쉘 — 하단 푸터 탭바(계산기 / 사다리 / 설정)가 모든 화면에서 상시 유지된다.
+/// 세 탭은 IndexedStack 으로 전환해 각자 상태를 보존한다. (T-260616-03 #5, T-261013-015)
 class MainShell extends StatefulWidget {
   const MainShell({super.key});
 
@@ -18,6 +19,7 @@ class _MainShellState extends State<MainShell> {
 
   static const _tabs = [
     _TabSpec(icon: Icons.calculate_outlined, label: '계산기'),
+    _TabSpec(icon: Icons.alt_route, label: '사다리'),
     _TabSpec(icon: Icons.settings_outlined, label: '설정'),
   ];
 
@@ -28,6 +30,7 @@ class _MainShellState extends State<MainShell> {
         index: _navIndex,
         children: const [
           CalculatorScreen(),
+          LadderTab(),
           SettingsScreen(),
         ],
       ),

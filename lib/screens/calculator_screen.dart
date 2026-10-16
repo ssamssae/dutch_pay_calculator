@@ -137,142 +137,167 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // 금액 표시 영역
+                    // 금액 표시 영역.
+                    // 자식 폭을 칸 폭으로 묶는다. 그래서 긴 금액은 안쪽 FittedBox가
+                    // 글자만 줄이고, 바깥 FittedBox는 높이가 부족할 때만 라벨까지 줄인다.
+                    // 세로에서는 높이가 충분해 바깥 배율 1이다.
                     Expanded(
                       flex: 2,
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              '총 금액',
-                              style: TextStyle(
-                                fontSize: 12 * scale,
-                                fontWeight: FontWeight.w600,
-                                color: DarkColors.textSecondary,
-                                letterSpacing: 0.8,
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          return FittedBox(
+                            fit: BoxFit.scaleDown,
+                            alignment: Alignment.centerLeft,
+                            child: SizedBox(
+                              width: constraints.maxWidth,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '총 금액',
+                                    style: TextStyle(
+                                      fontSize: 12 * scale,
+                                      fontWeight: FontWeight.w600,
+                                      color: DarkColors.textSecondary,
+                                      letterSpacing: 0.8,
+                                    ),
+                                  ),
+                                  SizedBox(height: 3 * scale),
+                                  FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    alignment: Alignment.centerLeft,
+                                    child: _digits.isEmpty
+                                        ? Text(
+                                            '얼마를 나눌까요?',
+                                            style: TextStyle(
+                                              fontSize: 32 * scale,
+                                              fontWeight: FontWeight.w700,
+                                              color: DarkColors.textFaint
+                                                  .withValues(alpha: 0.6),
+                                              height: 1.0,
+                                            ),
+                                          )
+                                        : Text(
+                                            '${_formatNumber(_amount)}원',
+                                            style: TextStyle(
+                                              fontSize: 32 * scale,
+                                              fontWeight: FontWeight.w800,
+                                              color: DarkColors.textPrimary,
+                                              letterSpacing: -0.8,
+                                              height: 1.0,
+                                            ),
+                                          ),
+                                  ),
+                                ],
                               ),
                             ),
-                            SizedBox(height: 3 * scale),
-                            FittedBox(
-                              fit: BoxFit.scaleDown,
-                              alignment: Alignment.centerLeft,
-                              child: _digits.isEmpty
-                                  ? Text(
-                                      '얼마를 나눌까요?',
-                                      style: TextStyle(
-                                        fontSize: 32 * scale,
-                                        fontWeight: FontWeight.w700,
-                                        color: DarkColors.textFaint.withValues(
-                                          alpha: 0.6,
-                                        ),
-                                        height: 1.0,
-                                      ),
-                                    )
-                                  : Text(
-                                      '${_formatNumber(_amount)}원',
-                                      style: TextStyle(
-                                        fontSize: 32 * scale,
-                                        fontWeight: FontWeight.w800,
-                                        color: DarkColors.textPrimary,
-                                        letterSpacing: -0.8,
-                                        height: 1.0,
-                                      ),
-                                    ),
-                            ),
-                          ],
-                        ),
+                          );
+                        },
                       ),
                     ),
 
-                    // 인원수 조정
+                    // 인원수 조정.
+                    // 가로 폭은 유지하고, 높이가 부족할 때만 줄인다. 세로 배율은 1이다.
                     Expanded(
                       flex: 3,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            '인원수',
-                            style: TextStyle(
-                              fontSize: 12 * scale,
-                              fontWeight: FontWeight.w600,
-                              color: DarkColors.textSecondary,
-                              letterSpacing: 0.8,
-                            ),
-                          ),
-                          SizedBox(height: 4 * scale),
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 16 * scale,
-                              vertical: 8 * scale,
-                            ),
-                            decoration: BoxDecoration(
-                              color: DarkColors.surface,
-                              borderRadius: BorderRadius.circular(18),
-                              border: Border.all(color: DarkColors.divider),
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: DarkColors.shadow,
-                                  blurRadius: 16,
-                                  offset: Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                // -10 (좌측 끝)
-                                _buildStepButton(
-                                  label: '-10',
-                                  onPressed: () => _changeCount(-10),
-                                  enabled: _personCount > 1,
-                                  scale: scale,
-                                ),
-                                SizedBox(width: 8 * scale),
-                                _buildCircleButton(
-                                  icon: Icons.remove,
-                                  tooltip: '1명 줄이기',
-                                  onPressed: () => _changeCount(-1),
-                                  enabled: _personCount > 1,
-                                  scale: scale,
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 16 * scale,
-                                  ),
-                                  child: Text(
-                                    '$_personCount명',
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          return FittedBox(
+                            fit: BoxFit.scaleDown,
+                            alignment: Alignment.center,
+                            child: SizedBox(
+                              width: constraints.maxWidth,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '인원수',
                                     style: TextStyle(
-                                      fontSize: 28 * scale,
-                                      fontWeight: FontWeight.bold,
-                                      color: DarkColors.textPrimary,
-                                      height: 1.0,
-                                      letterSpacing: -0.5,
+                                      fontSize: 12 * scale,
+                                      fontWeight: FontWeight.w600,
+                                      color: DarkColors.textSecondary,
+                                      letterSpacing: 0.8,
                                     ),
                                   ),
-                                ),
-                                _buildCircleButton(
-                                  icon: Icons.add,
-                                  tooltip: '1명 늘리기',
-                                  onPressed: () => _changeCount(1),
-                                  enabled: _personCount < 100,
-                                  scale: scale,
-                                ),
-                                SizedBox(width: 8 * scale),
-                                // +10 (우측 끝)
-                                _buildStepButton(
-                                  label: '+10',
-                                  onPressed: () => _changeCount(10),
-                                  enabled: _personCount < 100,
-                                  scale: scale,
-                                ),
-                              ],
+                                  SizedBox(height: 4 * scale),
+                                  Container(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 16 * scale,
+                                      vertical: 8 * scale,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: DarkColors.surface,
+                                      borderRadius: BorderRadius.circular(18),
+                                      border: Border.all(
+                                        color: DarkColors.divider,
+                                      ),
+                                      boxShadow: const [
+                                        BoxShadow(
+                                          color: DarkColors.shadow,
+                                          blurRadius: 16,
+                                          offset: Offset(0, 4),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        // -10 (좌측 끝)
+                                        _buildStepButton(
+                                          label: '-10',
+                                          onPressed: () => _changeCount(-10),
+                                          enabled: _personCount > 1,
+                                          scale: scale,
+                                        ),
+                                        SizedBox(width: 8 * scale),
+                                        _buildCircleButton(
+                                          icon: Icons.remove,
+                                          tooltip: '1명 줄이기',
+                                          onPressed: () => _changeCount(-1),
+                                          enabled: _personCount > 1,
+                                          scale: scale,
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 16 * scale,
+                                          ),
+                                          child: Text(
+                                            '$_personCount명',
+                                            style: TextStyle(
+                                              fontSize: 28 * scale,
+                                              fontWeight: FontWeight.bold,
+                                              color: DarkColors.textPrimary,
+                                              height: 1.0,
+                                              letterSpacing: -0.5,
+                                            ),
+                                          ),
+                                        ),
+                                        _buildCircleButton(
+                                          icon: Icons.add,
+                                          tooltip: '1명 늘리기',
+                                          onPressed: () => _changeCount(1),
+                                          enabled: _personCount < 100,
+                                          scale: scale,
+                                        ),
+                                        SizedBox(width: 8 * scale),
+                                        // +10 (우측 끝)
+                                        _buildStepButton(
+                                          label: '+10',
+                                          onPressed: () => _changeCount(10),
+                                          enabled: _personCount < 100,
+                                          scale: scale,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          );
+                        },
                       ),
                     ),
 

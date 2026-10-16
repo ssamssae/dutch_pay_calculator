@@ -138,56 +138,62 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     // 금액 표시 영역.
-                    // 세로에서는 높이가 충분해 배율 1이다. 가로처럼 높이가 부족할 때만 줄어든다.
+                    // 자식 폭을 칸 폭으로 묶는다. 그래서 긴 금액은 안쪽 FittedBox가
+                    // 글자만 줄이고, 바깥 FittedBox는 높이가 부족할 때만 라벨까지 줄인다.
+                    // 세로에서는 높이가 충분해 바깥 배율 1이다.
                     Expanded(
                       flex: 2,
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          alignment: Alignment.centerLeft,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '총 금액',
-                                style: TextStyle(
-                                  fontSize: 12 * scale,
-                                  fontWeight: FontWeight.w600,
-                                  color: DarkColors.textSecondary,
-                                  letterSpacing: 0.8,
-                                ),
+                      child: LayoutBuilder(
+                        builder: (context, constraints) {
+                          return FittedBox(
+                            fit: BoxFit.scaleDown,
+                            alignment: Alignment.centerLeft,
+                            child: SizedBox(
+                              width: constraints.maxWidth,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '총 금액',
+                                    style: TextStyle(
+                                      fontSize: 12 * scale,
+                                      fontWeight: FontWeight.w600,
+                                      color: DarkColors.textSecondary,
+                                      letterSpacing: 0.8,
+                                    ),
+                                  ),
+                                  SizedBox(height: 3 * scale),
+                                  FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    alignment: Alignment.centerLeft,
+                                    child: _digits.isEmpty
+                                        ? Text(
+                                            '얼마를 나눌까요?',
+                                            style: TextStyle(
+                                              fontSize: 32 * scale,
+                                              fontWeight: FontWeight.w700,
+                                              color: DarkColors.textFaint
+                                                  .withValues(alpha: 0.6),
+                                              height: 1.0,
+                                            ),
+                                          )
+                                        : Text(
+                                            '${_formatNumber(_amount)}원',
+                                            style: TextStyle(
+                                              fontSize: 32 * scale,
+                                              fontWeight: FontWeight.w800,
+                                              color: DarkColors.textPrimary,
+                                              letterSpacing: -0.8,
+                                              height: 1.0,
+                                            ),
+                                          ),
+                                  ),
+                                ],
                               ),
-                              SizedBox(height: 3 * scale),
-                              FittedBox(
-                                fit: BoxFit.scaleDown,
-                                alignment: Alignment.centerLeft,
-                                child: _digits.isEmpty
-                                    ? Text(
-                                        '얼마를 나눌까요?',
-                                        style: TextStyle(
-                                          fontSize: 32 * scale,
-                                          fontWeight: FontWeight.w700,
-                                          color: DarkColors.textFaint
-                                              .withValues(alpha: 0.6),
-                                          height: 1.0,
-                                        ),
-                                      )
-                                    : Text(
-                                        '${_formatNumber(_amount)}원',
-                                        style: TextStyle(
-                                          fontSize: 32 * scale,
-                                          fontWeight: FontWeight.w800,
-                                          color: DarkColors.textPrimary,
-                                          letterSpacing: -0.8,
-                                          height: 1.0,
-                                        ),
-                                      ),
-                              ),
-                            ],
-                          ),
-                        ),
+                            ),
+                          );
+                        },
                       ),
                     ),
 

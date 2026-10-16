@@ -45,6 +45,19 @@ const _devices = <_Device>[
 /// 세로 화면 불변 비교 대상. 가로·큰 글자는 넘침 0만 확인한다.
 const _portraitNames = <String>{'iPhone SE 세로', 'iPhone 6.9 세로', 'iPad 13 세로'};
 
+/// 키 9를 열 번 누른 뒤(9,999,999,999원)의 세로 기준점.
+/// 빈 금액 기준점과 달리 큰 글자 세로도 포함한다.
+const _longAmountDevices = <_Device>[
+  (name: 'iPhone SE 세로', size: Size(375, 667), textScale: 1, padding: _zero),
+  (name: 'iPhone 6.9 세로', size: Size(440, 956), textScale: 1, padding: _zero),
+  (
+    name: 'iPhone SE 세로 큰 글자',
+    size: Size(375, 667),
+    textScale: 1.3,
+    padding: _zero,
+  ),
+];
+
 /// 고치기 전(f8f7c28) 세로 초기 화면의 주요 위젯 위치·크기.
 /// 형식: `left,top widthxheight`.
 const _portraitBaseline = <String, String>{
@@ -72,6 +85,20 @@ const _portraitBaseline = <String, String>{
       'count 487.10,419.89 57.80x29.00\n'
       'key1 160.16,1126.80 23.35x33.00\n'
       'tab 155.13,1350.00 33.75x16.00',
+};
+
+/// 고치기 전 main(f8f7c28)에서 9를 열 번 입력한 세로 화면.
+/// 라벨은 자연 크기, 금액 글자만 칸 폭까지 줄어든 값이다.
+const _longAmountBaseline = <String, String>{
+  'iPhone SE 세로':
+      'amountLabel 20.01,67.00 43.22x14.00\n'
+      'amount 20.01,83.50 334.98x24.96',
+  'iPhone 6.9 세로':
+      'amountLabel 25.20,98.94 53.60x18.00\n'
+      'amount 25.20,120.09 389.60x28.85',
+  'iPhone SE 세로 큰 글자':
+      'amountLabel 20.01,64.22 55.23x19.00\n'
+      'amount 20.01,85.72 334.98x24.72',
 };
 
 Widget _host() => MaterialApp(
@@ -107,6 +134,30 @@ String _geometry(WidgetTester tester) {
     );
   }
   return lines.join('\n');
+}
+
+String _rectLine(String key, Rect box) =>
+    '$key '
+    '${box.left.toStringAsFixed(2)},${box.top.toStringAsFixed(2)} '
+    '${box.width.toStringAsFixed(2)}x${box.height.toStringAsFixed(2)}';
+
+/// 금액 칸의 「총 금액」 라벨과 그 아래 금액 글자.
+/// 1인당 결과 카드의 같은 문자열은 제외한다.
+String _longAmountGeometry(WidgetTester tester) {
+  const amountText = '9,999,999,999원';
+  final labelFinder = _inCalculator(find.text('총 금액'));
+  expect(labelFinder, findsOneWidget);
+  final column = find
+      .ancestor(of: labelFinder, matching: find.byType(Column))
+      .evaluate()
+      .first;
+  final amountFinder = find.descendant(
+    of: find.byElementPredicate((element) => element == column),
+    matching: find.text(amountText),
+  );
+  expect(amountFinder, findsOneWidget, reason: '금액 칸의 금액 글자');
+  return '${_rectLine('amountLabel', tester.getRect(labelFinder))}\n'
+      '${_rectLine('amount', tester.getRect(amountFinder))}';
 }
 
 Future<void> _pumpDevice(WidgetTester tester, _Device device) async {
@@ -157,6 +208,19 @@ void main() {
       await _pumpDevice(tester, device);
       final geometry = _geometry(tester);
       expect(geometry, _portraitBaseline[device.name], reason: geometry);
+    });
+  }
+
+  for (final device in _longAmountDevices) {
+    testWidgets('세로 긴 금액 기준점 ${device.name}', (tester) async {
+      await _pumpDevice(tester, device);
+      for (var i = 0; i < 10; i++) {
+        await tester.tap(_inCalculator(find.text('9')));
+        await tester.pump();
+      }
+      expect(tester.takeException(), isNull);
+      final geometry = _longAmountGeometry(tester);
+      expect(geometry, _longAmountBaseline[device.name], reason: geometry);
     });
   }
 }

@@ -1,0 +1,162 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:dutch_pay_calculator/screens/calculator_screen.dart';
+import 'package:dutch_pay_calculator/screens/main_shell.dart';
+import 'package:dutch_pay_calculator/theme/app_theme.dart';
+
+/// 논리 화면 크기. 테스트 뷰 배율은 1이라 물리 크기와 같다.
+/// 안전 영역은 물리 픽셀이며, 배율 1에서는 논리 픽셀과 같다.
+typedef _Device = ({
+  String name,
+  Size size,
+  double textScale,
+  FakeViewPadding padding,
+});
+
+/// 계산기 탭(하단 탭 포함 실제 셸)이 기기 크기마다 넘치지 않는지 본다.
+/// 크기는 T-261017-008 지정값. 큰 글자는 더 좁은 아이폰 SE 세로.
+const _zero = FakeViewPadding.zero;
+
+const _devices = <_Device>[
+  (name: 'iPhone SE 세로', size: Size(375, 667), textScale: 1, padding: _zero),
+  (name: 'iPhone 6.9 세로', size: Size(440, 956), textScale: 1, padding: _zero),
+  (name: 'iPhone SE 가로', size: Size(667, 375), textScale: 1, padding: _zero),
+  (name: 'iPhone 6.9 가로', size: Size(956, 440), textScale: 1, padding: _zero),
+  (
+    name: 'iPhone 6.9 가로 안전영역',
+    size: Size(956, 440),
+    textScale: 1,
+    // 가로 노치·홈 인디케이터. 사다리 검사의 6.7형 가로(좌우 59·아래 21)보다 조금 넓다.
+    padding: FakeViewPadding(left: 62, right: 62, bottom: 21),
+  ),
+  (name: 'iPad 13 세로', size: Size(1032, 1376), textScale: 1, padding: _zero),
+  (name: 'iPad 13 가로', size: Size(1376, 1032), textScale: 1, padding: _zero),
+  (
+    name: 'iPhone SE 세로 큰 글자',
+    size: Size(375, 667),
+    textScale: 1.3,
+    padding: _zero,
+  ),
+];
+
+/// 세로 화면 불변 비교 대상. 가로·큰 글자는 넘침 0만 확인한다.
+const _portraitNames = <String>{'iPhone SE 세로', 'iPhone 6.9 세로', 'iPad 13 세로'};
+
+/// 고치기 전(f8f7c28) 세로 초기 화면의 주요 위젯 위치·크기.
+/// 형식: `left,top widthxheight`.
+const _portraitBaseline = <String, String>{
+  'iPhone SE 세로':
+      'title 127.47,10.51 120.06x19.00\n'
+      'amountLabel 20.01,65.98 43.22x14.00\n'
+      'placeholder 20.01,82.48 242.37x27.00\n'
+      'peopleLabel 20.01,147.32 32.42x14.00\n'
+      'count 164.65,179.16 45.69x23.00\n'
+      'key1 53.04,454.60 18.59x26.00\n'
+      'tab 45.63,641.00 33.75x16.00',
+  'iPhone 6.9 세로':
+      'title 144.40,13.20 151.20x24.00\n'
+      'amountLabel 25.20,96.36 53.60x18.00\n'
+      'placeholder 25.20,117.51 304.65x34.00\n'
+      'peopleLabel 25.20,232.69 40.20x18.00\n'
+      'count 191.10,272.89 57.80x29.00\n'
+      'key1 61.49,706.80 23.35x33.00\n'
+      'tab 56.46,930.00 33.75x16.00',
+  'iPad 13 세로':
+      'title 440.40,13.20 151.20x24.00\n'
+      'amountLabel 25.20,138.36 53.60x18.00\n'
+      'placeholder 25.20,159.51 304.65x34.00\n'
+      'peopleLabel 25.20,379.69 40.20x18.00\n'
+      'count 487.10,419.89 57.80x29.00\n'
+      'key1 160.16,1126.80 23.35x33.00\n'
+      'tab 155.13,1350.00 33.75x16.00',
+};
+
+Widget _host() => MaterialApp(
+  debugShowCheckedModeBanner: false,
+  theme: AppTheme.dark,
+  darkTheme: AppTheme.dark,
+  themeMode: ThemeMode.dark,
+  home: const MainShell(),
+);
+
+Finder _inCalculator(Finder matching) =>
+    find.descendant(of: find.byType(CalculatorScreen), matching: matching);
+
+/// 주요 위젯의 전역 위치·크기. 소수 둘째 자리까지.
+String _geometry(WidgetTester tester) {
+  final targets = <String, Finder>{
+    'title': _inCalculator(find.text('더치페이 계산기')),
+    'amountLabel': _inCalculator(find.text('총 금액')),
+    'placeholder': _inCalculator(find.text('얼마를 나눌까요?')),
+    'peopleLabel': _inCalculator(find.text('인원수')),
+    'count': _inCalculator(find.text('1명')),
+    'key1': _inCalculator(find.text('1')),
+    'tab': find.text('계산기'),
+  };
+  final lines = <String>[];
+  for (final MapEntry(:key, :value) in targets.entries) {
+    expect(value, findsOneWidget, reason: key);
+    final box = tester.getRect(value);
+    lines.add(
+      '$key '
+      '${box.left.toStringAsFixed(2)},${box.top.toStringAsFixed(2)} '
+      '${box.width.toStringAsFixed(2)}x${box.height.toStringAsFixed(2)}',
+    );
+  }
+  return lines.join('\n');
+}
+
+Future<void> _pumpDevice(WidgetTester tester, _Device device) async {
+  tester.view.devicePixelRatio = 1;
+  tester.view.physicalSize = device.size;
+  tester.view.padding = device.padding;
+  tester.view.viewPadding = device.padding;
+  tester.platformDispatcher.textScaleFactorTestValue = device.textScale;
+  addTearDown(tester.view.reset);
+  addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+
+  await tester.pumpWidget(_host());
+  await tester.pumpAndSettle();
+}
+
+void main() {
+  setUp(() {
+    SharedPreferences.setMockInitialValues({});
+    // 광고 크기 조회는 테스트에서 응답이 없다. 배너는 숨은 채로 둔다.
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(
+          const MethodChannel('plugins.flutter.io/google_mobile_ads'),
+          (call) async => null,
+        );
+  });
+
+  for (final device in _devices) {
+    testWidgets('계산기 탭이 ${device.name} 에서 넘치지 않는다', (tester) async {
+      await _pumpDevice(tester, device);
+
+      expect(_inCalculator(find.text('총 금액')), findsOneWidget);
+      expect(_inCalculator(find.text('인원수')), findsOneWidget);
+      expect(find.text('계산기'), findsOneWidget);
+      expect(find.text('사다리'), findsOneWidget);
+
+      // 결과가 나타난 뒤에도 넘치면 안 된다.
+      await tester.tap(_inCalculator(find.text('1')));
+      await tester.pump();
+      await tester.tap(_inCalculator(find.byIcon(Icons.add)));
+      await tester.pump();
+      expect(_inCalculator(find.text('1원')), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
+  }
+
+  for (final device in _devices.where((d) => _portraitNames.contains(d.name))) {
+    testWidgets('세로 배치 기준점 ${device.name}', (tester) async {
+      await _pumpDevice(tester, device);
+      final geometry = _geometry(tester);
+      expect(geometry, _portraitBaseline[device.name], reason: geometry);
+    });
+  }
+}

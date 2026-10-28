@@ -33,7 +33,7 @@ const _devices = <String, _Device>{
 /// 계산기 탭은 iPhone 가로에서 이 변경 전부터 몇 px 넘쳐서(b5b1a5f 실측) 여기서 뺀다.
 /// 하단 바 높이 80 은 실제 탭 바(약 65)보다 넉넉히 잡아 더 좁은 조건으로 본다.
 Widget _host() => MaterialApp(
-  theme: AppTheme.dark,
+  theme: AppTheme.light,
   home: const Scaffold(
     body: LadderTab(),
     bottomNavigationBar: SafeArea(top: false, child: SizedBox(height: 80)),

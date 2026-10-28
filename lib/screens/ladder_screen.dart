@@ -269,7 +269,7 @@ class _NameCell extends StatelessWidget {
       child: Material(
         color: active
             ? color.withValues(alpha: 0.16)
-            : DarkColors.surfaceElevated,
+            : TossColors.surfaceElevated,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
           side: BorderSide(
@@ -325,7 +325,7 @@ class _ResultCell extends StatelessWidget {
       decoration: BoxDecoration(
         color: shown
             ? color.withValues(alpha: 0.16)
-            : DarkColors.surfaceElevated,
+            : TossColors.surfaceElevated,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: shown ? color : scheme.outlineVariant,

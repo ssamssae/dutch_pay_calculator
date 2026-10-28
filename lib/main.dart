@@ -22,9 +22,10 @@ class DutchPayApp extends StatelessWidget {
     return MaterialApp(
       title: '더치페이 계산기',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.dark,
-      darkTheme: AppTheme.dark,
-      themeMode: ThemeMode.dark,
+      // 토스톤 라이트 고정 (T-261028-010). 폰 테마와 무관하게 항상 라이트.
+      theme: AppTheme.light,
+      darkTheme: AppTheme.light,
+      themeMode: ThemeMode.light,
       home: const SplashScreen(),
     );
   }
@@ -62,7 +63,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: DarkColors.bgDeep,
+      backgroundColor: TossColors.bgDeep,
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -74,7 +75,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 borderRadius: BorderRadius.circular(24),
                 boxShadow: [
                   BoxShadow(
-                    color: DarkColors.accent.withValues(alpha: 0.25),
+                    color: TossColors.accent.withValues(alpha: 0.25),
                     blurRadius: 32,
                     offset: const Offset(0, 8),
                   ),
@@ -89,11 +90,11 @@ class _SplashScreenState extends State<SplashScreen> {
                   height: 100,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stack) => Container(
-                    color: DarkColors.surface,
+                    color: TossColors.surface,
                     child: const Icon(
                       Icons.calculate_rounded,
                       size: 56,
-                      color: DarkColors.accent,
+                      color: TossColors.accent,
                     ),
                   ),
                 ),
@@ -105,7 +106,7 @@ class _SplashScreenState extends State<SplashScreen> {
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: DarkColors.textPrimary,
+                color: TossColors.textPrimary,
               ),
             ),
           ],

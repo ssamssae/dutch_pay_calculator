@@ -13,7 +13,7 @@ void main() {
     final store = LadderSetupStore(await SharedPreferences.getInstance());
     await tester.pumpWidget(
       MaterialApp(
-        theme: AppTheme.dark,
+        theme: AppTheme.light,
         home: LadderSetupScreen(
           store: store,
           initialSetup: LadderSetup.initial(),

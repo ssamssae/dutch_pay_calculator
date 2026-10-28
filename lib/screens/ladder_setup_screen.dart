@@ -408,7 +408,7 @@ class _StartBar extends StatelessWidget {
         : '$players명 · $players자리 준비 완료';
 
     return Material(
-      color: DarkColors.surface,
+      color: TossColors.surface,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
         child: Column(

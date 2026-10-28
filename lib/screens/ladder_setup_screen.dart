@@ -126,10 +126,38 @@ class _LadderSetupScreenState extends State<LadderSetupScreen> {
     final setup = _setup;
     final players = _players.length;
     final textTheme = Theme.of(context).textTheme;
-    final scheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('사다리 타기')),
+      backgroundColor: TossColors.bgDeep,
+      appBar: AppBar(
+        centerTitle: false,
+        titleSpacing: 20,
+        title: const Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '사다리 타기',
+              style: TextStyle(
+                fontWeight: FontWeight.w800,
+                fontSize: 20,
+                letterSpacing: -0.4,
+                color: TossColors.textPrimary,
+                height: 1.05,
+              ),
+            ),
+            Text(
+              '이름과 결과를 적어요',
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                color: TossColors.textFaint,
+                height: 1.1,
+              ),
+            ),
+          ],
+        ),
+      ),
       body: SafeArea(
         child: Column(
           children: [
@@ -137,109 +165,157 @@ class _LadderSetupScreenState extends State<LadderSetupScreen> {
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                 children: [
-                  _SectionHeader(
-                    title: '참가자 $players명',
-                    action: TextButton.icon(
-                      key: const ValueKey('add-player'),
-                      onPressed: players < LadderSetup.maxPlayers
-                          ? _addPlayer
-                          : null,
-                      icon: const Icon(Icons.person_add_alt_1),
-                      label: const Text('추가'),
-                    ),
-                  ),
-                  for (var i = 0; i < players; i++)
-                    Padding(
-                      key: ObjectKey(_players[i]),
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: _SelectAllField(
-                              fieldKey: ValueKey('player-$i'),
-                              controller: _players[i],
-                              hint: '${i + 1}번',
-                              icon: Icons.person_outline,
-                              onChanged: (_) => _update(),
+                  _RoundCard(
+                    cardKey: const ValueKey('player-card'),
+                    child: Column(
+                      children: [
+                        _SectionHeader(
+                          title: '참가자 $players명',
+                          action: TextButton.icon(
+                            key: const ValueKey('add-player'),
+                            style: TextButton.styleFrom(
+                              foregroundColor: TossColors.accent,
+                              disabledForegroundColor:
+                                  TossColors.textQuaternary,
+                            ),
+                            onPressed: players < LadderSetup.maxPlayers
+                                ? _addPlayer
+                                : null,
+                            icon: const Icon(Icons.person_add_alt_1),
+                            label: const Text('추가'),
+                          ),
+                        ),
+                        for (var i = 0; i < players; i++)
+                          Padding(
+                            key: ObjectKey(_players[i]),
+                            padding: const EdgeInsets.only(bottom: 4),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: _SelectAllField(
+                                    fieldKey: ValueKey('player-$i'),
+                                    controller: _players[i],
+                                    hint: '${i + 1}번',
+                                    icon: Icons.person_outline,
+                                    onChanged: (_) => _update(),
+                                  ),
+                                ),
+                                IconButton(
+                                  tooltip: '${i + 1}번 빼기',
+                                  onPressed: players > LadderSetup.minPlayers
+                                      ? () => _removePlayer(i)
+                                      : null,
+                                  icon: Icon(
+                                    Icons.remove_circle_outline,
+                                    color: players > LadderSetup.minPlayers
+                                        ? TossColors.textSecondary
+                                        : TossColors.textQuaternary,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          IconButton(
-                            tooltip: '${i + 1}번 빼기',
-                            onPressed: players > LadderSetup.minPlayers
-                                ? () => _removePlayer(i)
+                      ],
+                    ),
+                  ),
+                  // 칩 카드는 결과 카드와 분리한다.
+                  // 결과 카드에 넣으면 제목만 보여도 칩을 찾은 것으로 처리된다.
+                  Container(
+                    key: const ValueKey('quick-chip-card'),
+                    margin: const EdgeInsets.only(bottom: 8),
+                    padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+                    decoration: BoxDecoration(
+                      color: TossColors.surface,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: TossColors.border),
+                    ),
+                    child: Wrap(
+                      spacing: 8,
+                      runSpacing: 4,
+                      children: [
+                        _QuickChip(
+                          label: '당첨/꽝',
+                          onPressed: () => _fill(LadderSetup.winLose(players)),
+                        ),
+                        _QuickChip(
+                          label: '1등~$players등',
+                          onPressed: () => _fill(LadderSetup.ranks(players)),
+                        ),
+                        _QuickChip(
+                          label: '순서 1~$players',
+                          onPressed: () => _fill(LadderSetup.order(players)),
+                        ),
+                      ],
+                    ),
+                  ),
+                  _RoundCard(
+                    cardKey: const ValueKey('result-card'),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _SectionHeader(
+                          title: '결과',
+                          action: TextButton.icon(
+                            key: const ValueKey('add-result'),
+                            style: TextButton.styleFrom(
+                              foregroundColor: TossColors.accent,
+                              disabledForegroundColor:
+                                  TossColors.textQuaternary,
+                            ),
+                            onPressed: _results.length < LadderSetup.maxPlayers
+                                ? _addResult
                                 : null,
-                            icon: const Icon(Icons.remove_circle_outline),
+                            icon: const Icon(Icons.add),
+                            label: const Text('줄 추가'),
                           ),
-                        ],
-                      ),
-                    ),
-                  const SizedBox(height: 16),
-                  _SectionHeader(
-                    title: '결과',
-                    action: TextButton.icon(
-                      key: const ValueKey('add-result'),
-                      onPressed: _results.length < LadderSetup.maxPlayers
-                          ? _addResult
-                          : null,
-                      icon: const Icon(Icons.add),
-                      label: const Text('줄 추가'),
-                    ),
-                  ),
-                  Text(
-                    '라벨과 개수를 적어요. 개수를 모두 더하면 참가자 수와 같아야 해요.',
-                    style: textTheme.bodySmall?.copyWith(
-                      color: scheme.onSurfaceVariant,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 4,
-                    children: [
-                      ActionChip(
-                        label: const Text('당첨/꽝'),
-                        onPressed: () => _fill(LadderSetup.winLose(players)),
-                      ),
-                      ActionChip(
-                        label: Text('1등~$players등'),
-                        onPressed: () => _fill(LadderSetup.ranks(players)),
-                      ),
-                      ActionChip(
-                        label: Text('순서 1~$players'),
-                        onPressed: () => _fill(LadderSetup.order(players)),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  for (var j = 0; j < _results.length; j++)
-                    Padding(
-                      key: ObjectKey(_results[j]),
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: _SelectAllField(
-                              fieldKey: ValueKey('result-$j'),
-                              controller: _results[j].label,
-                              hint: '결과 ${j + 1}',
-                              onChanged: (_) => _update(),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 12, bottom: 8),
+                          child: Text(
+                            '라벨과 개수를 적어요. 개수를 모두 더하면 참가자 수와 같아야 해요.',
+                            style: textTheme.bodySmall?.copyWith(
+                              color: TossColors.textFaint,
+                              height: 1.4,
                             ),
                           ),
-                          _CountStepper(
-                            index: j,
-                            count: _results[j].count,
-                            onChanged: (count) => _setCount(j, count),
+                        ),
+                        for (var j = 0; j < _results.length; j++)
+                          Padding(
+                            key: ObjectKey(_results[j]),
+                            padding: const EdgeInsets.only(bottom: 4),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: _SelectAllField(
+                                    fieldKey: ValueKey('result-$j'),
+                                    controller: _results[j].label,
+                                    hint: '결과 ${j + 1}',
+                                    onChanged: (_) => _update(),
+                                  ),
+                                ),
+                                _CountStepper(
+                                  index: j,
+                                  count: _results[j].count,
+                                  onChanged: (count) => _setCount(j, count),
+                                ),
+                                IconButton(
+                                  tooltip: '결과 ${j + 1} 지우기',
+                                  onPressed: _results.length > 1
+                                      ? () => _removeResult(j)
+                                      : null,
+                                  icon: Icon(
+                                    Icons.close,
+                                    color: _results.length > 1
+                                        ? TossColors.textSecondary
+                                        : TossColors.textQuaternary,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                          IconButton(
-                            tooltip: '결과 ${j + 1} 지우기',
-                            onPressed: _results.length > 1
-                                ? () => _removeResult(j)
-                                : null,
-                            icon: const Icon(Icons.close),
-                          ),
-                        ],
-                      ),
+                      ],
                     ),
+                  ),
                 ],
               ),
             ),
@@ -249,6 +325,56 @@ class _LadderSetupScreenState extends State<LadderSetupScreen> {
           ],
         ),
       ),
+    );
+  }
+}
+
+const _fieldBorder = OutlineInputBorder(
+  borderRadius: BorderRadius.all(Radius.circular(14)),
+  borderSide: BorderSide(color: TossColors.border),
+);
+
+class _RoundCard extends StatelessWidget {
+  const _RoundCard({required this.cardKey, required this.child});
+
+  final Key cardKey;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      key: cardKey,
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.fromLTRB(12, 0, 0, 2),
+      decoration: BoxDecoration(
+        color: TossColors.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: TossColors.border),
+      ),
+      child: child,
+    );
+  }
+}
+
+class _QuickChip extends StatelessWidget {
+  const _QuickChip({required this.label, required this.onPressed});
+
+  final String label;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return ActionChip(
+      label: Text(label),
+      labelStyle: const TextStyle(
+        color: TossColors.textSecondary,
+        fontWeight: FontWeight.w700,
+        fontSize: 13,
+      ),
+      backgroundColor: TossColors.surfaceElevated,
+      side: BorderSide.none,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
+      onPressed: onPressed,
     );
   }
 }
@@ -266,7 +392,15 @@ class _SectionHeader extends StatelessWidget {
       child: Row(
         children: [
           Expanded(
-            child: Text(title, style: Theme.of(context).textTheme.titleMedium),
+            child: Text(
+              title,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w800,
+                color: TossColors.textPrimary,
+                letterSpacing: -0.3,
+              ),
+            ),
           ),
           action,
         ],
@@ -334,12 +468,30 @@ class _SelectAllFieldState extends State<_SelectAllField> {
       onChanged: widget.onChanged,
       maxLength: 20,
       textInputAction: TextInputAction.next,
+      style: const TextStyle(
+        color: TossColors.textPrimary,
+        fontWeight: FontWeight.w600,
+      ),
       decoration: InputDecoration(
         hintText: widget.hint,
-        prefixIcon: widget.icon == null ? null : Icon(widget.icon),
+        hintStyle: const TextStyle(
+          color: TossColors.textQuaternary,
+          fontWeight: FontWeight.w500,
+        ),
+        prefixIcon: widget.icon == null
+            ? null
+            : Icon(widget.icon, color: TossColors.textFaint, size: 20),
         counterText: '',
         isDense: true,
-        border: const OutlineInputBorder(),
+        filled: true,
+        fillColor: TossColors.surfaceElevated,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        border: _fieldBorder,
+        enabledBorder: _fieldBorder,
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(14)),
+          borderSide: BorderSide(color: TossColors.accent, width: 1.5),
+        ),
       ),
     );
   }
@@ -373,7 +525,12 @@ class _CountStepper extends StatelessWidget {
             '×$count',
             key: ValueKey('count-$index'),
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleMedium,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w800,
+              color: TossColors.textPrimary,
+              letterSpacing: -0.3,
+            ),
           ),
         ),
         IconButton(
@@ -397,38 +554,67 @@ class _StartBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
     final remaining = setup.remaining;
     final players = setup.players.length;
+    final ready = setup.canStart;
     final message = remaining > 0
         ? '남은 자리 $remaining'
         : remaining < 0
         ? '${-remaining}자리 넘침 — 개수를 줄여 주세요'
         : '$players명 · $players자리 준비 완료';
 
-    return Material(
-      color: TossColors.surface,
+    return DecoratedBox(
+      decoration: const BoxDecoration(
+        color: TossColors.surface,
+        border: Border(top: BorderSide(color: TossColors.divider)),
+      ),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 10, 16, 12),
+        padding: const EdgeInsets.fromLTRB(16, 6, 16, 8),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              message,
-              key: const ValueKey('status'),
-              style: textTheme.bodyMedium?.copyWith(
-                color: setup.canStart ? scheme.primary : scheme.error,
-                fontWeight: FontWeight.w600,
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+              decoration: BoxDecoration(
+                color: ready
+                    ? TossColors.accentSoft
+                    : TossColors.danger.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  // 글자는 진한 청록(#17A58F). 네온(#3DE0C8)은 테두리로만 둔다.
+                  color: ready ? TossColors.accentNeon : TossColors.danger,
+                ),
+              ),
+              child: Text(
+                message,
+                key: const ValueKey('status'),
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: ready ? TossColors.accent : TossColors.danger,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 13,
+                  height: 1.2,
+                ),
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
             SizedBox(
               width: double.infinity,
-              height: 52,
+              height: 48,
               child: FilledButton.icon(
                 key: const ValueKey('start'),
-                onPressed: setup.canStart ? onStart : null,
+                style: FilledButton.styleFrom(
+                  backgroundColor: TossColors.accent,
+                  foregroundColor: Colors.white,
+                  disabledBackgroundColor: TossColors.surfaceElevated,
+                  disabledForegroundColor: TossColors.textQuaternary,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                onPressed: ready ? onStart : null,
                 icon: const Icon(Icons.play_arrow_rounded),
                 label: const Text(
                   '사다리 타기',

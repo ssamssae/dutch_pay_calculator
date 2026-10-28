@@ -103,7 +103,18 @@ class _LadderScreenState extends State<LadderScreen>
     final arrivals = [for (var c = 0; c < size; c++) _round.playerAt(c)];
 
     return Scaffold(
-      appBar: AppBar(title: const Text('사다리 타기')),
+      backgroundColor: TossColors.bgDeep,
+      appBar: AppBar(
+        title: const Text(
+          '사다리 타기',
+          style: TextStyle(
+            fontWeight: FontWeight.w800,
+            fontSize: 18,
+            letterSpacing: -0.3,
+            color: TossColors.textPrimary,
+          ),
+        ),
+      ),
       body: SafeArea(
         child: Column(
           children: [
@@ -146,7 +157,7 @@ class _LadderScreenState extends State<LadderScreen>
                               painter: LadderPainter(
                                 ladder: _round.ladder,
                                 colors: colors,
-                                lineColor: theme.colorScheme.outline,
+                                lineColor: TossColors.textFaint,
                                 revealed: Set.of(_revealed),
                                 running: Set.of(_running),
                                 progress: _controller,
@@ -199,6 +210,7 @@ class _LadderScreenState extends State<LadderScreen>
                       Expanded(
                         child: FilledButton.icon(
                           key: const ValueKey('reveal-all'),
+                          style: _accentButtonStyle,
                           onPressed: _revealAll,
                           icon: const Icon(Icons.visibility_outlined),
                           label: const Text('모두 보기'),
@@ -208,6 +220,7 @@ class _LadderScreenState extends State<LadderScreen>
                       Expanded(
                         child: OutlinedButton.icon(
                           key: const ValueKey('reshuffle'),
+                          style: _ghostButtonStyle,
                           onPressed: _reshuffle,
                           icon: const Icon(Icons.shuffle),
                           label: const Text('다시 섞기'),
@@ -221,6 +234,7 @@ class _LadderScreenState extends State<LadderScreen>
                       Expanded(
                         child: OutlinedButton.icon(
                           key: const ValueKey('copy'),
+                          style: _ghostButtonStyle,
                           onPressed: _copy,
                           icon: const Icon(Icons.copy_rounded),
                           label: const Text('결과 복사'),
@@ -230,6 +244,17 @@ class _LadderScreenState extends State<LadderScreen>
                       Expanded(
                         child: TextButton.icon(
                           key: const ValueKey('home'),
+                          style: TextButton.styleFrom(
+                            foregroundColor: TossColors.textSecondary,
+                            minimumSize: const Size(0, 48),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            textStyle: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
                           onPressed: () => Navigator.of(context).pop(),
                           icon: const Icon(Icons.home_outlined),
                           label: const Text('처음으로'),
@@ -247,6 +272,24 @@ class _LadderScreenState extends State<LadderScreen>
   }
 }
 
+final _accentButtonStyle = FilledButton.styleFrom(
+  backgroundColor: TossColors.accent,
+  foregroundColor: Colors.white,
+  elevation: 0,
+  minimumSize: const Size(0, 48),
+  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+  textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+);
+
+final _ghostButtonStyle = OutlinedButton.styleFrom(
+  foregroundColor: TossColors.textPrimary,
+  backgroundColor: TossColors.surface,
+  side: const BorderSide(color: TossColors.border),
+  minimumSize: const Size(0, 48),
+  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+  textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+);
+
 class _NameCell extends StatelessWidget {
   const _NameCell({
     super.key,
@@ -263,7 +306,6 @@ class _NameCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 6),
       child: Material(
@@ -273,7 +315,7 @@ class _NameCell extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
           side: BorderSide(
-            color: active ? color : scheme.outlineVariant,
+            color: active ? color : TossColors.border,
             width: active ? 2 : 1,
           ),
         ),
@@ -289,8 +331,8 @@ class _NameCell extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                  color: active ? color : null,
-                  fontWeight: active ? FontWeight.w700 : null,
+                  color: active ? color : TossColors.textPrimary,
+                  fontWeight: active ? FontWeight.w700 : FontWeight.w600,
                 ),
               ),
             ),
@@ -316,7 +358,6 @@ class _ResultCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
     final owner = this.owner;
     final shown = owner != null;
@@ -328,7 +369,7 @@ class _ResultCell extends StatelessWidget {
             : TossColors.surfaceElevated,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: shown ? color : scheme.outlineVariant,
+          color: shown ? color : TossColors.border,
           width: shown ? 2 : 1,
         ),
       ),
@@ -342,7 +383,8 @@ class _ResultCell extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
             style: textTheme.labelLarge?.copyWith(
-              fontWeight: shown ? FontWeight.w800 : null,
+              color: TossColors.textPrimary,
+              fontWeight: shown ? FontWeight.w800 : FontWeight.w600,
             ),
           ),
           if (shown)
@@ -375,7 +417,6 @@ class _Summary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final scheme = Theme.of(context).colorScheme;
     final shown = [
       for (var p = 0; p < round.size; p++)
         if (revealed.contains(p)) p,
@@ -385,7 +426,7 @@ class _Summary extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
         child: Text(
           running ? '사다리 타는 중…' : '이름을 누르면 그 사람 사다리를 타요',
-          style: textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
+          style: textTheme.bodyMedium?.copyWith(color: TossColors.textFaint),
         ),
       );
     }
@@ -408,8 +449,9 @@ class _Summary extends StatelessWidget {
                   constraints: BoxConstraints(maxWidth: constraints.maxWidth),
                   child: DecoratedBox(
                     decoration: BoxDecoration(
-                      border: Border.all(color: scheme.outlineVariant),
-                      borderRadius: BorderRadius.circular(8),
+                      color: TossColors.surface,
+                      border: Border.all(color: TossColors.border),
+                      borderRadius: BorderRadius.circular(14),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
@@ -434,7 +476,9 @@ class _Summary extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                              style: textTheme.bodyMedium,
+                              style: textTheme.bodyMedium?.copyWith(
+                                color: TossColors.textPrimary,
+                              ),
                             ),
                           ),
                         ],

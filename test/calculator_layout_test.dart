@@ -58,54 +58,56 @@ const _longAmountDevices = <_Device>[
   ),
 ];
 
-/// 고치기 전(f8f7c28) 세로 초기 화면의 주요 위젯 위치·크기.
+/// 토스톤 리디자인(T-261028-010) 세로 초기 화면의 주요 위젯 위치·크기.
+/// 제목은 왼쪽 정렬, 금액 라벨은 채움칸 안쪽(여백 18×배율)으로 들어간 값이다.
+/// 옛 기준(f8f7c28, 다크·가운데 제목)은 같은 커밋의 git 이력에 있다.
 /// 형식: `left,top widthxheight`.
 const _portraitBaseline = <String, String>{
   'iPhone SE 세로':
-      'title 127.47,10.51 120.06x19.00\n'
-      'amountLabel 20.01,65.98 43.22x14.00\n'
-      'placeholder 20.01,82.48 242.37x27.00\n'
-      'peopleLabel 20.01,147.32 32.42x14.00\n'
-      'count 164.65,179.16 45.69x23.00\n'
-      'key1 53.04,454.60 18.59x26.00\n'
+      'title 20.01,10.35 143.54x20.00\n'
+      'amountLabel 35.02,76.30 43.22x14.00\n'
+      'placeholder 35.02,92.80 242.37x27.00\n'
+      'peopleLabel 20.01,150.09 32.42x14.00\n'
+      'count 164.65,181.94 45.69x23.00\n'
+      'key1 57.65,444.10 18.59x26.00\n'
       'tab 45.63,641.00 33.75x16.00',
   'iPhone 6.9 세로':
-      'title 144.40,13.20 151.20x24.00\n'
-      'amountLabel 25.20,96.36 53.60x18.00\n'
-      'placeholder 25.20,117.51 304.65x34.00\n'
-      'peopleLabel 25.20,232.69 40.20x18.00\n'
-      'count 191.10,272.89 57.80x29.00\n'
-      'key1 61.49,706.80 23.35x33.00\n'
+      'title 25.20,13.05 181.60x25.00\n'
+      'amountLabel 44.10,109.32 53.60x18.00\n'
+      'placeholder 44.10,130.47 304.65x34.00\n'
+      'peopleLabel 25.20,236.05 40.20x18.00\n'
+      'count 191.10,276.25 57.80x29.00\n'
+      'key1 67.26,693.05 23.35x33.00\n'
       'tab 56.46,930.00 33.75x16.00',
   'iPad 13 세로':
-      'title 440.40,13.20 151.20x24.00\n'
-      'amountLabel 25.20,138.36 53.60x18.00\n'
-      'placeholder 25.20,159.51 304.65x34.00\n'
-      'peopleLabel 25.20,379.69 40.20x18.00\n'
-      'count 487.10,419.89 57.80x29.00\n'
-      'key1 160.16,1126.80 23.35x33.00\n'
+      'title 25.20,13.05 181.60x25.00\n'
+      'amountLabel 44.10,151.33 53.60x18.00\n'
+      'placeholder 44.10,172.48 304.65x34.00\n'
+      'peopleLabel 25.20,383.05 40.20x18.00\n'
+      'count 487.10,423.25 57.80x29.00\n'
+      'key1 165.92,1113.05 23.35x33.00\n'
       'tab 155.13,1350.00 33.75x16.00',
 };
 
-/// 고치기 전 main(f8f7c28)에서 9를 열 번 입력한 세로 화면.
-/// 라벨은 자연 크기, 금액 글자만 칸 폭까지 줄어든 값이다.
+/// 토스톤 리디자인(T-261028-010)에서 9를 열 번 입력한 세로 화면.
+/// 라벨은 자연 크기, 금액 글자만 채움칸 안쪽 폭까지 줄어든 값이다.
 const _longAmountBaseline = <String, String>{
   'iPhone SE 세로':
-      'amountLabel 20.01,67.00 43.22x14.00\n'
-      'amount 20.01,83.50 334.98x24.96',
+      'amountLabel 35.02,78.44 43.22x14.00\n'
+      'amount 35.02,94.94 304.97x22.73',
   'iPhone 6.9 세로':
-      'amountLabel 25.20,98.94 53.60x18.00\n'
-      'amount 25.20,120.09 389.60x28.85',
+      'amountLabel 44.10,113.30 53.60x18.00\n'
+      'amount 44.10,134.45 351.80x26.05',
   'iPhone SE 세로 큰 글자':
-      'amountLabel 20.01,64.22 55.23x19.00\n'
-      'amount 20.01,85.72 334.98x24.72',
+      'amountLabel 35.02,75.65 55.23x19.00\n'
+      'amount 35.02,97.15 304.97x22.50',
 };
 
 Widget _host() => MaterialApp(
   debugShowCheckedModeBanner: false,
-  theme: AppTheme.dark,
-  darkTheme: AppTheme.dark,
-  themeMode: ThemeMode.dark,
+  theme: AppTheme.light,
+  darkTheme: AppTheme.light,
+  themeMode: ThemeMode.light,
   home: const MainShell(),
 );
 

@@ -25,7 +25,7 @@ void main() {
   Future<void> pumpSettings(WidgetTester tester) async {
     await AccountService.init();
     await tester.pumpWidget(
-      MaterialApp(theme: AppTheme.dark, home: const SettingsScreen()),
+      MaterialApp(theme: AppTheme.light, home: const SettingsScreen()),
     );
     await tester.pumpAndSettle();
   }

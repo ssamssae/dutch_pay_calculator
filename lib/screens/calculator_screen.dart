@@ -101,10 +101,35 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 48 * scale,
-        title: Text(
-          '더치페이 계산기',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18 * scale),
+        toolbarHeight: 64 * scale,
+        centerTitle: false,
+        titleSpacing: 24 * scale,
+        // 토스톤(T-261028-010): 큰 제목을 왼쪽에, 한 줄 설명을 아래에.
+        title: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '더치페이 계산기',
+              style: TextStyle(
+                fontWeight: FontWeight.w800,
+                fontSize: 22 * scale,
+                letterSpacing: -0.4,
+                color: TossColors.textPrimary,
+                height: 1.1,
+              ),
+            ),
+            SizedBox(height: 2 * scale),
+            Text(
+              '얼마씩 내면 될까요?',
+              style: TextStyle(
+                fontSize: 12 * scale,
+                fontWeight: FontWeight.w600,
+                color: TossColors.textFaint,
+                height: 1.1,
+              ),
+            ),
+          ],
         ),
         actions: [
           // 광고 제거 구매 버튼 — 이미 제거됐으면 숨김.
@@ -116,6 +141,11 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                 icon: const Icon(Icons.block),
                 tooltip: '광고 제거',
                 onPressed: IapService.buyRemoveAds,
+                style: IconButton.styleFrom(
+                  backgroundColor: TossColors.surfaceElevated,
+                  foregroundColor: TossColors.textSecondary,
+                  shape: const CircleBorder(),
+                ),
               );
             },
           ),
@@ -150,7 +180,17 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                             alignment: Alignment.centerLeft,
                             child: SizedBox(
                               width: constraints.maxWidth,
-                              child: Column(
+                              // 토스 송금 화면처럼 금액을 둥근 채움칸 안에 (T-261028-010).
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 18 * scale,
+                                  vertical: 12 * scale,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: TossColors.surfaceElevated,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -159,7 +199,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                     style: TextStyle(
                                       fontSize: 12 * scale,
                                       fontWeight: FontWeight.w600,
-                                      color: DarkColors.textSecondary,
+                                      color: TossColors.textSecondary,
                                       letterSpacing: 0.8,
                                     ),
                                   ),
@@ -173,8 +213,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                             style: TextStyle(
                                               fontSize: 32 * scale,
                                               fontWeight: FontWeight.w700,
-                                              color: DarkColors.textFaint
-                                                  .withValues(alpha: 0.6),
+                                              color: TossColors.textQuaternary,
                                               height: 1.0,
                                             ),
                                           )
@@ -183,13 +222,14 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                             style: TextStyle(
                                               fontSize: 32 * scale,
                                               fontWeight: FontWeight.w800,
-                                              color: DarkColors.textPrimary,
+                                              color: TossColors.textPrimary,
                                               letterSpacing: -0.8,
                                               height: 1.0,
                                             ),
                                           ),
                                   ),
                                 ],
+                                ),
                               ),
                             ),
                           );
@@ -217,7 +257,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                     style: TextStyle(
                                       fontSize: 12 * scale,
                                       fontWeight: FontWeight.w600,
-                                      color: DarkColors.textSecondary,
+                                      color: TossColors.textSecondary,
                                       letterSpacing: 0.8,
                                     ),
                                   ),
@@ -228,18 +268,11 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                       vertical: 8 * scale,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: DarkColors.surface,
-                                      borderRadius: BorderRadius.circular(18),
+                                      color: TossColors.surface,
+                                      borderRadius: BorderRadius.circular(20),
                                       border: Border.all(
-                                        color: DarkColors.divider,
+                                        color: TossColors.border,
                                       ),
-                                      boxShadow: const [
-                                        BoxShadow(
-                                          color: DarkColors.shadow,
-                                          blurRadius: 16,
-                                          offset: Offset(0, 4),
-                                        ),
-                                      ],
                                     ),
                                     child: Row(
                                       mainAxisAlignment:
@@ -269,7 +302,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                             style: TextStyle(
                                               fontSize: 28 * scale,
                                               fontWeight: FontWeight.bold,
-                                              color: DarkColors.textPrimary,
+                                              color: TossColors.textPrimary,
                                               height: 1.0,
                                               letterSpacing: -0.5,
                                             ),
@@ -319,28 +352,13 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                       horizontal: 16 * scale,
                                       vertical: 9 * scale,
                                     ),
+                                    // 결과 카드: 네온 글로우 대신 연청록 바탕 (T-261028-010).
                                     decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                        colors: [
-                                          DarkColors.accentSoft,
-                                          DarkColors.surface,
-                                        ],
-                                      ),
+                                      color: TossColors.accentSoft,
                                       borderRadius: BorderRadius.circular(20),
                                       border: Border.all(
-                                        color: DarkColors.accentBorder,
-                                        width: 1.2,
+                                        color: TossColors.accentBorder,
                                       ),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: DarkColors.accentGlow,
-                                          blurRadius: 24,
-                                          spreadRadius: -4,
-                                          offset: const Offset(0, 4),
-                                        ),
-                                      ],
                                     ),
                                     child: SingleChildScrollView(
                                       physics: const ClampingScrollPhysics(),
@@ -354,16 +372,15 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                               Icon(
                                                 Icons.person_outline_rounded,
                                                 size: 14 * scale,
-                                                color: DarkColors.accent,
+                                                color: TossColors.accent,
                                               ),
                                               SizedBox(width: 5 * scale),
                                               Text(
                                                 '1인당 금액',
                                                 style: TextStyle(
                                                   fontSize: 12 * scale,
-                                                  fontWeight: FontWeight.w600,
-                                                  color:
-                                                      DarkColors.textSecondary,
+                                                  fontWeight: FontWeight.w700,
+                                                  color: TossColors.accent,
                                                   letterSpacing: 0.8,
                                                 ),
                                               ),
@@ -378,7 +395,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                               style: TextStyle(
                                                 fontSize: 44 * scale,
                                                 fontWeight: FontWeight.w700,
-                                                color: DarkColors.accent,
+                                                color: TossColors.accent,
                                                 height: 1.0,
                                                 letterSpacing: -2.0,
                                               ),
@@ -434,9 +451,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                           vertical: 4 * scale,
                                         ),
                                         decoration: BoxDecoration(
-                                          color: DarkColors.surfaceElevated,
+                                          color: TossColors.surface,
                                           borderRadius: BorderRadius.circular(
-                                            10,
+                                            999,
                                           ),
                                         ),
                                         child: Text(
@@ -444,7 +461,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                                           style: TextStyle(
                                             fontSize: 11 * scale,
                                             fontWeight: FontWeight.w600,
-                                            color: DarkColors.textSecondary,
+                                            color: TossColors.textSecondary,
                                             letterSpacing: 0.4,
                                           ),
                                         ),
@@ -463,33 +480,25 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
             const AdaptiveBanner(),
 
             // 하단 고정: 키패드
+            // 키패드: 격자선 대신 둥근 키 (T-261028-010).
             Container(
               decoration: const BoxDecoration(
-                color: DarkColors.surface,
-                boxShadow: [
-                  BoxShadow(
-                    color: DarkColors.shadow,
-                    blurRadius: 16,
-                    offset: Offset(0, -4),
-                  ),
-                ],
+                color: TossColors.surface,
+                border: Border(top: BorderSide(color: TossColors.divider)),
+              ),
+              padding: EdgeInsets.fromLTRB(
+                8 * scale,
+                6 * scale,
+                8 * scale,
+                8 * scale,
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Column(
-                    children: [
-                      _buildDivider(),
-                      _buildKeyRow(['1', '2', '3'], scale),
-                      _buildDivider(),
-                      _buildKeyRow(['4', '5', '6'], scale),
-                      _buildDivider(),
-                      _buildKeyRow(['7', '8', '9'], scale),
-                      _buildDivider(),
-                      _buildKeyRow(['C', '0', '⌫'], scale),
-                      _buildDivider(),
-                    ],
-                  ),
+                  _buildKeyRow(['1', '2', '3'], scale),
+                  _buildKeyRow(['4', '5', '6'], scale),
+                  _buildKeyRow(['7', '8', '9'], scale),
+                  _buildKeyRow(['C', '0', '⌫'], scale),
                 ],
               ),
             ),
@@ -499,22 +508,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     );
   }
 
-  Widget _buildDivider() {
-    return Container(height: 0.5, color: DarkColors.divider);
-  }
-
   Widget _buildKeyRow(List<String> keys, double scale) {
-    final rowHeight = 44.0 * scale;
-    final children = <Widget>[];
-    for (var i = 0; i < keys.length; i++) {
-      if (i > 0) {
-        children.add(
-          Container(width: 0.5, height: rowHeight, color: DarkColors.divider),
-        );
-      }
-      children.add(_buildKeyButton(keys[i], scale));
-    }
-    return Row(children: children);
+    return Row(children: [for (final key in keys) _buildKeyButton(key, scale)]);
   }
 
   Widget _buildKeyButton(String key, double scale) {
@@ -526,29 +521,37 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         ? '금액 전체 지우기'
         : null;
 
-    final button = Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: () => _onKeyTap(key),
-        splashColor: DarkColors.splashLight,
-        highlightColor: DarkColors.highlightLight,
-        child: Container(
-          height: 44 * scale,
-          alignment: Alignment.center,
-          child: isBackspace
-              ? Icon(
-                  Icons.backspace_outlined,
-                  color: DarkColors.textSecondary,
-                  size: 22 * scale,
-                )
-              : Text(
-                  key,
-                  style: TextStyle(
-                    fontSize: (isClear ? 20 : 22) * scale,
-                    fontWeight: isClear ? FontWeight.w700 : FontWeight.w500,
-                    color: isClear ? DarkColors.danger : DarkColors.textPrimary,
+    // 키 높이 40 + 여백 3×2 = 옛 44 행과 비슷하게 유지해 세로 공간 변화를 줄인다.
+    final button = Padding(
+      padding: EdgeInsets.all(3 * scale),
+      child: Material(
+        color: TossColors.keyFill,
+        borderRadius: BorderRadius.circular(14),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: () => _onKeyTap(key),
+          splashColor: TossColors.splashLight,
+          highlightColor: TossColors.highlightLight,
+          child: Container(
+            height: 40 * scale,
+            alignment: Alignment.center,
+            child: isBackspace
+                ? Icon(
+                    Icons.backspace_outlined,
+                    color: TossColors.textSecondary,
+                    size: 22 * scale,
+                  )
+                : Text(
+                    key,
+                    style: TextStyle(
+                      fontSize: (isClear ? 20 : 22) * scale,
+                      fontWeight: isClear ? FontWeight.w800 : FontWeight.w600,
+                      color: isClear
+                          ? TossColors.danger
+                          : TossColors.textPrimary,
+                    ),
                   ),
-                ),
+          ),
         ),
       ),
     );
@@ -579,13 +582,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
           alignment: Alignment.center,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-            color: enabled
-                ? DarkColors.accent.withValues(alpha: 0.16)
-                : DarkColors.surfaceElevated,
+            color: enabled ? TossColors.surfaceElevated : TossColors.surface,
             border: Border.all(
-              color: enabled
-                  ? DarkColors.accent.withValues(alpha: 0.4)
-                  : DarkColors.divider,
+              color: enabled ? TossColors.surfaceElevated : TossColors.divider,
             ),
           ),
           child: Text(
@@ -593,7 +592,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
             style: TextStyle(
               fontSize: 14 * scale,
               fontWeight: FontWeight.w700,
-              color: enabled ? DarkColors.accent : DarkColors.textFaint,
+              color: enabled
+                  ? TossColors.textSecondary
+                  : TossColors.textQuaternary,
               letterSpacing: -0.3,
             ),
           ),
@@ -617,29 +618,19 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: enabled ? onPressed : null,
-          splashColor: DarkColors.splashLight,
-          highlightColor: DarkColors.highlightLight,
+          splashColor: TossColors.splashLight,
+          highlightColor: TossColors.highlightLight,
           child: Container(
             width: 44 * scale,
             height: 44 * scale,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: enabled ? DarkColors.accent : DarkColors.surfaceElevated,
-              boxShadow: enabled
-                  ? [
-                      BoxShadow(
-                        color: DarkColors.accent.withValues(alpha: 0.30),
-                        blurRadius: 12,
-                        spreadRadius: -2,
-                        offset: const Offset(0, 3),
-                      ),
-                    ]
-                  : null,
+              color: enabled ? TossColors.accent : TossColors.surfaceElevated,
             ),
             child: Icon(
               icon,
               size: 24 * scale,
-              color: enabled ? DarkColors.bgDeep : DarkColors.textFaint,
+              color: enabled ? Colors.white : TossColors.textQuaternary,
             ),
           ),
         ),

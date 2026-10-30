@@ -7,6 +7,8 @@ import 'package:dutch_pay_calculator/screens/calculator_screen.dart';
 import 'package:dutch_pay_calculator/screens/main_shell.dart';
 import 'package:dutch_pay_calculator/theme/app_theme.dart';
 
+import 'support/layout_devices.dart';
+
 /// 논리 화면 크기. 테스트 뷰 배율은 1이라 물리 크기와 같다.
 /// 안전 영역은 물리 픽셀이며, 배율 1에서는 논리 픽셀과 같다.
 typedef _Device = ({
@@ -70,7 +72,7 @@ const _portraitBaseline = <String, String>{
       'peopleLabel 20.01,150.09 32.42x14.00\n'
       'count 164.65,181.94 45.69x23.00\n'
       'key1 57.65,444.10 18.59x26.00\n'
-      'tab 45.63,641.00 33.75x16.00',
+      'tab 40.00,641.00 45.00x16.00',
   'iPhone 6.9 세로':
       'title 25.20,13.05 181.60x25.00\n'
       'amountLabel 44.10,109.32 53.60x18.00\n'
@@ -78,7 +80,7 @@ const _portraitBaseline = <String, String>{
       'peopleLabel 25.20,236.05 40.20x18.00\n'
       'count 191.10,276.25 57.80x29.00\n'
       'key1 67.26,693.05 23.35x33.00\n'
-      'tab 56.46,930.00 33.75x16.00',
+      'tab 50.83,930.00 45.00x16.00',
   'iPad 13 세로':
       'title 25.20,13.05 181.60x25.00\n'
       'amountLabel 44.10,151.33 53.60x18.00\n'
@@ -86,7 +88,7 @@ const _portraitBaseline = <String, String>{
       'peopleLabel 25.20,383.05 40.20x18.00\n'
       'count 487.10,423.25 57.80x29.00\n'
       'key1 165.92,1113.05 23.35x33.00\n'
-      'tab 155.13,1350.00 33.75x16.00',
+      'tab 149.50,1350.00 45.00x16.00',
 };
 
 /// 토스톤 리디자인(T-261028-010)에서 9를 열 번 입력한 세로 화면.
@@ -123,7 +125,7 @@ String _geometry(WidgetTester tester) {
     'peopleLabel': _inCalculator(find.text('인원수')),
     'count': _inCalculator(find.text('1명')),
     'key1': _inCalculator(find.text('1')),
-    'tab': find.text('계산기'),
+    'tab': find.text('더치페이'),
   };
   final lines = <String>[];
   for (final MapEntry(:key, :value) in targets.entries) {
@@ -192,8 +194,8 @@ void main() {
 
       expect(_inCalculator(find.text('총 금액')), findsOneWidget);
       expect(_inCalculator(find.text('인원수')), findsOneWidget);
-      expect(find.text('계산기'), findsOneWidget);
-      expect(find.text('사다리'), findsOneWidget);
+      expect(find.text('더치페이'), findsOneWidget);
+      expect(find.text('미니앱'), findsOneWidget);
 
       // 결과가 나타난 뒤에도 넘치면 안 된다.
       await tester.tap(_inCalculator(find.text('1')));
@@ -202,6 +204,42 @@ void main() {
       await tester.pump();
       expect(_inCalculator(find.text('1원')), findsOneWidget);
       expect(tester.takeException(), isNull);
+    });
+  }
+
+  Rect zeroKeyRect(WidgetTester tester) => tester.getRect(
+    find
+        .ancestor(
+          of: _inCalculator(find.text('0')),
+          matching: find.byType(Material),
+        )
+        .first,
+  );
+
+  for (final device in kLayoutDevices) {
+    testWidgets('미니앱 버튼이 0 키를 가리지 않는다 ${device.name}', (tester) async {
+      await pumpOnDevice(tester, device, _host());
+      final buttonRect = tester.getRect(
+        find.byKey(const ValueKey('miniapp-button')),
+      );
+      expect(
+        buttonRect.overlaps(zeroKeyRect(tester)),
+        isFalse,
+        reason: '$buttonRect / ${zeroKeyRect(tester)}',
+      );
+    });
+
+    testWidgets('0 키 아래 끝을 눌러도 0 이 들어간다 ${device.name}', (tester) async {
+      await pumpOnDevice(tester, device, _host());
+      await tester.tap(_inCalculator(find.text('1')));
+      await tester.pump();
+      final zero = zeroKeyRect(tester);
+      await tester.tapAt(Offset(zero.center.dx, zero.bottom - 1));
+      await tester.pumpAndSettle();
+      // 금액 칸과 1인당 결과 카드에 같은 금액이 함께 보인다.
+      expect(_inCalculator(find.text('10원')), findsNWidgets(2));
+      expect(_inCalculator(find.text('1원')), findsNothing);
+      expect(find.byKey(const ValueKey('miniapp-sheet')), findsNothing);
     });
   }
 

@@ -4,6 +4,7 @@ import '../ladder/ladder_setup.dart';
 import '../ladder/ladder_setup_store.dart';
 import '../services/ads_service.dart';
 import '../theme/app_theme.dart';
+import '../widgets/mini_app_scaffold.dart';
 import '../widgets/toss_widgets.dart';
 import 'ladder_screen.dart';
 
@@ -131,6 +132,9 @@ class _LadderSetupScreenState extends State<LadderSetupScreen> {
     return Scaffold(
       backgroundColor: TossColors.bgDeep,
       appBar: AppBar(
+        leading: Navigator.of(context).canPop()
+            ? const MiniAppBackButton()
+            : null,
         centerTitle: false,
         titleSpacing: 20,
         title: const Column(

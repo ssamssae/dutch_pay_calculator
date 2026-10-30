@@ -5,7 +5,7 @@ import '../ladder/ladder_setup.dart';
 import '../ladder/ladder_setup_store.dart';
 import 'ladder_setup_screen.dart';
 
-/// 하단 「사다리」 탭 — 마지막 입력을 읽은 뒤 설정 화면을 띄운다.
+/// 미니앱 판의 「사다리」 칸 — 마지막 입력을 읽은 뒤 설정 화면을 띄운다.
 class LadderTab extends StatefulWidget {
   const LadderTab({super.key});
 

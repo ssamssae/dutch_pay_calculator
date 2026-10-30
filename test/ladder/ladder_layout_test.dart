@@ -29,16 +29,8 @@ const _devices = <String, _Device>{
   'iPad 13 가로': (Size(2732, 2048), 2, FakeViewPadding(top: 48, bottom: 40)),
 };
 
-/// MainShell 과 같은 자리(하단 탭 바 위)에 사다리 탭만 띄운다.
-/// 계산기 탭은 iPhone 가로에서 이 변경 전부터 몇 px 넘쳐서(b5b1a5f 실측) 여기서 뺀다.
-/// 하단 바 높이 80 은 실제 탭 바(약 65)보다 넉넉히 잡아 더 좁은 조건으로 본다.
-Widget _host() => MaterialApp(
-  theme: AppTheme.light,
-  home: const Scaffold(
-    body: LadderTab(),
-    bottomNavigationBar: SafeArea(top: false, child: SizedBox(height: 80)),
-  ),
-);
+/// 사다리는 미니앱 판에서 아래 탭 없이 전체 화면으로 열린다.
+Widget _host() => MaterialApp(theme: AppTheme.light, home: const LadderTab());
 
 void main() {
   setUp(() {
@@ -78,6 +70,8 @@ void main() {
       }
       final order = find.text('순서 1~12');
       await tester.scrollUntilVisible(order, 200, scrollable: list);
+      await tester.ensureVisible(order);
+      await tester.pumpAndSettle();
       await tester.tap(order);
       await tester.pumpAndSettle();
 

@@ -20,7 +20,7 @@ class DutchPayApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '더치페이 계산기',
+      title: '나눠요',
       debugShowCheckedModeBanner: false,
       // 토스톤 라이트 고정 (T-261028-010). 폰 테마와 무관하게 항상 라이트.
       theme: AppTheme.light,
@@ -102,7 +102,7 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
             const SizedBox(height: 20),
             const Text(
-              '더치페이 계산기',
+              '나눠요',
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,

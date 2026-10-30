@@ -7,7 +7,7 @@ import 'package:in_app_review/in_app_review.dart';
 class AppReviewService {
   static final InAppReview _inAppReview = InAppReview.instance;
 
-  /// iOS App Store 숫자 id (더치페이 계산기). Android 는 패키지로 자동.
+  /// iOS App Store 숫자 id (나눠요). Android 는 패키지로 자동.
   static const String _appStoreId = '6762072499';
 
   /// 스토어 리뷰 페이지 열기. 실패 시 false.

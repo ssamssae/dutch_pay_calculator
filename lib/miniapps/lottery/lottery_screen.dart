@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -78,23 +79,59 @@ class LotteryScreen extends StatelessWidget {
                 ),
             ],
           ),
-          bottom: TossBottomButton(
-            buttonKey: const ValueKey('shuffle'),
-            label: board == null ? '섞기' : '다시 섞기',
-            onPressed: controller.shuffle,
-            status: Text(
-              '남은 제비 ${controller.remaining}장 · 남은 당첨 ${controller.remainingWinners}장',
-              key: const ValueKey('lottery-status'),
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color: TossColors.textSecondary,
-              ),
-            ),
-          ),
+          bottom: _ShuffleButton(controller: controller),
         );
       },
+    );
+  }
+}
+
+/// 「섞기」 버튼. 500ms 안에는 한 번만 섞는다.
+class _ShuffleButton extends StatefulWidget {
+  const _ShuffleButton({required this.controller});
+
+  final LotteryController controller;
+
+  @override
+  State<_ShuffleButton> createState() => _ShuffleButtonState();
+}
+
+class _ShuffleButtonState extends State<_ShuffleButton> {
+  /// 연타로 판이 두 번 바뀌지 않게 막는 시간.
+  static const _shuffleCooldown = Duration(milliseconds: 500);
+
+  Timer? _shuffleLock;
+
+  @override
+  void dispose() {
+    _shuffleLock?.cancel();
+    super.dispose();
+  }
+
+  void _shuffle() {
+    if (_shuffleLock?.isActive ?? false) return;
+    _shuffleLock = Timer(_shuffleCooldown, () {});
+    widget.controller.shuffle();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = widget.controller;
+    final board = controller.board;
+    return TossBottomButton(
+      buttonKey: const ValueKey('shuffle'),
+      label: board == null ? '섞기' : '다시 섞기',
+      onPressed: _shuffle,
+      status: Text(
+        '남은 제비 ${controller.remaining}장 · 남은 당첨 ${controller.remainingWinners}장',
+        key: const ValueKey('lottery-status'),
+        textAlign: TextAlign.center,
+        style: const TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+          color: TossColors.textSecondary,
+        ),
+      ),
     );
   }
 }

@@ -180,6 +180,25 @@ void main() {
     expect(find.byKey(const ValueKey('ticket-3')), findsOneWidget);
   });
 
+  testWidgets('섞기를 빠르게 두 번 눌러도 한 번만 섞는다', (tester) async {
+    final controller = await _controller();
+    addTearDown(controller.dispose);
+    await tester.pumpWidget(_app(controller));
+
+    var notified = 0;
+    controller.addListener(() => notified++);
+    await tester.tap(find.byKey(const ValueKey('shuffle')));
+    await tester.tap(find.byKey(const ValueKey('shuffle')));
+    await tester.pump();
+    expect(notified, 1);
+
+    await tester.pump(const Duration(seconds: 1));
+    await tester.tap(find.byKey(const ValueKey('shuffle')));
+    await tester.pump();
+    expect(notified, 2);
+    await tester.pump(const Duration(seconds: 1));
+  });
+
   testWidgets('나갔다 와도 판이 남는다', (tester) async {
     final controller = await _controller();
     addTearDown(controller.dispose);

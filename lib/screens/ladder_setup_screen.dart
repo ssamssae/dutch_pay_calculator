@@ -4,6 +4,7 @@ import '../ladder/ladder_setup.dart';
 import '../ladder/ladder_setup_store.dart';
 import '../services/ads_service.dart';
 import '../theme/app_theme.dart';
+import '../widgets/toss_widgets.dart';
 import 'ladder_screen.dart';
 
 /// 사다리 탭 첫 화면: 참가자 이름과 결과(라벨 × 개수)를 적는다.
@@ -165,11 +166,11 @@ class _LadderSetupScreenState extends State<LadderSetupScreen> {
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
                 children: [
-                  _RoundCard(
+                  TossCard(
                     cardKey: const ValueKey('player-card'),
                     child: Column(
                       children: [
-                        _SectionHeader(
+                        TossSectionHeader(
                           title: '참가자 $players명',
                           action: TextButton.icon(
                             key: const ValueKey('add-player'),
@@ -192,7 +193,7 @@ class _LadderSetupScreenState extends State<LadderSetupScreen> {
                             child: Row(
                               children: [
                                 Expanded(
-                                  child: _SelectAllField(
+                                  child: TossNameField(
                                     fieldKey: ValueKey('player-$i'),
                                     controller: _players[i],
                                     hint: '${i + 1}번',
@@ -248,12 +249,12 @@ class _LadderSetupScreenState extends State<LadderSetupScreen> {
                       ],
                     ),
                   ),
-                  _RoundCard(
+                  TossCard(
                     cardKey: const ValueKey('result-card'),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _SectionHeader(
+                        TossSectionHeader(
                           title: '결과',
                           action: TextButton.icon(
                             key: const ValueKey('add-result'),
@@ -286,16 +287,18 @@ class _LadderSetupScreenState extends State<LadderSetupScreen> {
                             child: Row(
                               children: [
                                 Expanded(
-                                  child: _SelectAllField(
+                                  child: TossNameField(
                                     fieldKey: ValueKey('result-$j'),
                                     controller: _results[j].label,
                                     hint: '결과 ${j + 1}',
                                     onChanged: (_) => _update(),
                                   ),
                                 ),
-                                _CountStepper(
-                                  index: j,
-                                  count: _results[j].count,
+                                TossCountStepper(
+                                  id: '$j',
+                                  value: _results[j].count,
+                                  min: 1,
+                                  max: LadderSetup.maxPlayers,
                                   onChanged: (count) => _setCount(j, count),
                                 ),
                                 IconButton(
@@ -329,33 +332,6 @@ class _LadderSetupScreenState extends State<LadderSetupScreen> {
   }
 }
 
-const _fieldBorder = OutlineInputBorder(
-  borderRadius: BorderRadius.all(Radius.circular(14)),
-  borderSide: BorderSide(color: TossColors.border),
-);
-
-class _RoundCard extends StatelessWidget {
-  const _RoundCard({required this.cardKey, required this.child});
-
-  final Key cardKey;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      key: cardKey,
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.fromLTRB(12, 0, 0, 2),
-      decoration: BoxDecoration(
-        color: TossColors.surface,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: TossColors.border),
-      ),
-      child: child,
-    );
-  }
-}
-
 class _QuickChip extends StatelessWidget {
   const _QuickChip({required this.label, required this.onPressed});
 
@@ -375,173 +351,6 @@ class _QuickChip extends StatelessWidget {
       side: BorderSide.none,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(999)),
       onPressed: onPressed,
-    );
-  }
-}
-
-class _SectionHeader extends StatelessWidget {
-  const _SectionHeader({required this.title, required this.action});
-
-  final String title;
-  final Widget action;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 4),
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              title,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w800,
-                color: TossColors.textPrimary,
-                letterSpacing: -0.3,
-              ),
-            ),
-          ),
-          action,
-        ],
-      ),
-    );
-  }
-}
-
-/// 눌러서 들어가면 글자 전체가 선택돼 바로 덮어쓸 수 있는 입력칸.
-class _SelectAllField extends StatefulWidget {
-  const _SelectAllField({
-    required this.fieldKey,
-    required this.controller,
-    required this.hint,
-    this.icon,
-    required this.onChanged,
-  });
-
-  final Key fieldKey;
-  final TextEditingController controller;
-  final String hint;
-
-  /// 칸 왼쪽 아이콘. 좁은 결과 줄에서는 글자 자리를 위해 뺀다.
-  final IconData? icon;
-  final ValueChanged<String> onChanged;
-
-  @override
-  State<_SelectAllField> createState() => _SelectAllFieldState();
-}
-
-class _SelectAllFieldState extends State<_SelectAllField> {
-  final _focus = FocusNode();
-
-  @override
-  void initState() {
-    super.initState();
-    _focus.addListener(_onFocusChange);
-  }
-
-  @override
-  void dispose() {
-    _focus.dispose();
-    super.dispose();
-  }
-
-  void _onFocusChange() {
-    if (!_focus.hasFocus) return;
-    // 탭한 자리에 커서가 놓인 뒤 다음 프레임에 전체를 선택한다.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || !_focus.hasFocus) return;
-      final controller = widget.controller;
-      controller.selection = TextSelection(
-        baseOffset: 0,
-        extentOffset: controller.text.length,
-      );
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return TextField(
-      key: widget.fieldKey,
-      controller: widget.controller,
-      focusNode: _focus,
-      onChanged: widget.onChanged,
-      maxLength: 20,
-      textInputAction: TextInputAction.next,
-      style: const TextStyle(
-        color: TossColors.textPrimary,
-        fontWeight: FontWeight.w600,
-      ),
-      decoration: InputDecoration(
-        hintText: widget.hint,
-        hintStyle: const TextStyle(
-          color: TossColors.textQuaternary,
-          fontWeight: FontWeight.w500,
-        ),
-        prefixIcon: widget.icon == null
-            ? null
-            : Icon(widget.icon, color: TossColors.textFaint, size: 20),
-        counterText: '',
-        isDense: true,
-        filled: true,
-        fillColor: TossColors.surfaceElevated,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        border: _fieldBorder,
-        enabledBorder: _fieldBorder,
-        focusedBorder: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(14)),
-          borderSide: BorderSide(color: TossColors.accent, width: 1.5),
-        ),
-      ),
-    );
-  }
-}
-
-class _CountStepper extends StatelessWidget {
-  const _CountStepper({
-    required this.index,
-    required this.count,
-    required this.onChanged,
-  });
-
-  final int index;
-  final int count;
-  final ValueChanged<int> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        IconButton(
-          key: ValueKey('minus-$index'),
-          tooltip: '개수 줄이기',
-          onPressed: count > 1 ? () => onChanged(count - 1) : null,
-          icon: const Icon(Icons.remove),
-        ),
-        SizedBox(
-          width: 36,
-          child: Text(
-            '×$count',
-            key: ValueKey('count-$index'),
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w800,
-              color: TossColors.textPrimary,
-              letterSpacing: -0.3,
-            ),
-          ),
-        ),
-        IconButton(
-          key: ValueKey('plus-$index'),
-          tooltip: '개수 늘리기',
-          onPressed: count < LadderSetup.maxPlayers
-              ? () => onChanged(count + 1)
-              : null,
-          icon: const Icon(Icons.add),
-        ),
-      ],
     );
   }
 }

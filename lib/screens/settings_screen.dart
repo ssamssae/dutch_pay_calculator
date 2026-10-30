@@ -38,12 +38,12 @@ class SettingsScreen extends StatelessWidget {
         '${Platform.operatingSystem} ${Platform.operatingSystemVersion}';
     final body =
         '\n\n\n--- 아래 정보는 문제 해결에 도움이 돼요 (지워도 됩니다) ---\n'
-        '앱: 더치페이 계산기 $version\n'
+        '앱: 나눠요 $version\n'
         '기기: $device';
     final uri = Uri(
       scheme: 'mailto',
       path: feedbackEmail,
-      query: _encodeQuery({'subject': '[더치페이 계산기] 피드백', 'body': body}),
+      query: _encodeQuery({'subject': '[나눠요] 피드백', 'body': body}),
     );
     bool ok = false;
     try {

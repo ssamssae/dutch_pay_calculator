@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools">
     <!-- AdMob 배너 광고 사용 — google_mobile_ads 가 AD_ID 권한 유지(개인화 광고). Play 데이터안전: 광고ID 수집 선언. (2026-06-16 T-260615-07) -->
     <application
-        android:label="더치페이 계산기"
+        android:label="나눠요"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

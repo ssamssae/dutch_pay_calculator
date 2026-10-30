@@ -198,9 +198,12 @@ class BasicCalculatorController extends ChangeNotifier {
   void _sync() {
     _expression = _formatTokens(_tokens);
     final entry = _entry;
-    _display = entry != null
-        ? formatCalcText(entry)
-        : formatCalcText(_lastNumber()?.text ?? '0');
+    if (entry == null) {
+      _display = formatCalcText(_lastNumber()?.text ?? '0');
+      return;
+    }
+    final text = formatCalcText(entry);
+    _display = _entryPercent ? '$text%' : text;
   }
 
   NumberToken? _lastNumber() {

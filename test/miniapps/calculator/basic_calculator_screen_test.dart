@@ -81,6 +81,53 @@ void main() {
     );
   });
 
+  testWidgets('지우기 키에 한 자리 지우기 이름표가 있다', (tester) async {
+    final controller = BasicCalculatorController();
+    addTearDown(controller.dispose);
+    await tester.pumpWidget(_app(controller));
+
+    expect(find.byTooltip('한 자리 지우기'), findsOneWidget);
+    expect(find.byKey(const ValueKey('calc-⌫')), findsOneWidget);
+  });
+
+  testWidgets('긴 식은 결과 글자 높이를 줄이지 않는다', (tester) async {
+    final controller = BasicCalculatorController();
+    addTearDown(controller.dispose);
+    final device = kLayoutDevices.firstWhere((d) => d.name == 'iPhone SE 세로');
+    await pumpOnDevice(tester, device, _app(controller));
+
+    void press1234Plus() {
+      for (final key in ['1', '2', '3', '4', '+']) {
+        controller.press(key);
+      }
+    }
+
+    press1234Plus();
+    await tester.pump();
+    final shortHeight = tester
+        .getRect(find.byKey(const ValueKey('calc-display')))
+        .height;
+
+    for (var i = 0; i < 9; i++) {
+      press1234Plus();
+    }
+    await tester.pump();
+    final expression = tester
+        .widget<Text>(find.byKey(const ValueKey('calc-expression')))
+        .data!;
+    final longHeight = tester
+        .getRect(find.byKey(const ValueKey('calc-display')))
+        .height;
+
+    expect(expression.length, greaterThanOrEqualTo(70));
+    expect(shortHeight, greaterThan(40));
+    expect(
+      longHeight,
+      shortHeight,
+      reason: 'short=$shortHeight long=$longHeight expr=${expression.length}',
+    );
+  });
+
   for (final device in kLayoutDevices) {
     testWidgets('넘치지 않는다 ${device.name}', (tester) async {
       final controller = BasicCalculatorController();

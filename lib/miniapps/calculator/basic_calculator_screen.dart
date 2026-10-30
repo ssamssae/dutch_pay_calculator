@@ -34,42 +34,60 @@ class BasicCalculatorScreen extends StatelessWidget {
           subtitle: '간단한 계산을 바로 해요',
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Align(
-              alignment: Alignment.bottomRight,
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                alignment: Alignment.bottomRight,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      controller.expression,
-                      key: const ValueKey('calc-expression'),
-                      maxLines: 1,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: TossColors.textFaint,
-                        height: 1.2,
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                // 식·결과는 너비를 따로 줄인다. 바깥은 가로 화면의 남는 높이만 맞춘다.
+                return Align(
+                  alignment: Alignment.bottomRight,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.bottomRight,
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: constraints.maxWidth,
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              controller.expression,
+                              key: const ValueKey('calc-expression'),
+                              maxLines: 1,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: TossColors.textFaint,
+                                height: 1.2,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              controller.display,
+                              key: const ValueKey('calc-display'),
+                              maxLines: 1,
+                              style: const TextStyle(
+                                fontSize: 48,
+                                fontWeight: FontWeight.w800,
+                                color: TossColors.textPrimary,
+                                height: 1.05,
+                                letterSpacing: -0.6,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      controller.display,
-                      key: const ValueKey('calc-display'),
-                      maxLines: 1,
-                      style: const TextStyle(
-                        fontSize: 48,
-                        fontWeight: FontWeight.w800,
-                        color: TossColors.textPrimary,
-                        height: 1.05,
-                        letterSpacing: -0.6,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+                  ),
+                );
+              },
             ),
           ),
           bottom: _keypad(),
@@ -134,7 +152,7 @@ class _CalcKey extends StatelessWidget {
         : _operator
         ? TossColors.accent
         : TossColors.textPrimary;
-    return Material(
+    final button = Material(
       key: ValueKey('calc-$label'),
       color: _equals ? TossColors.accent : TossColors.keyFill,
       borderRadius: BorderRadius.circular(14),
@@ -156,5 +174,9 @@ class _CalcKey extends StatelessWidget {
         ),
       ),
     );
+    if (label == '⌫') {
+      return Tooltip(message: '한 자리 지우기', child: button);
+    }
+    return button;
   }
 }

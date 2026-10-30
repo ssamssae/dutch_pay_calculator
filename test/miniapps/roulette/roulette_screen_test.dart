@@ -131,6 +131,31 @@ void main() {
     );
   });
 
+  testWidgets('결과 뒤 지우기 → 결과 글자 없음', (tester) async {
+    final controller = await openController(random: _FixedRandom(1));
+    controller.renameItem(0, '민수');
+    controller.renameItem(1, '지영');
+    controller.addItem();
+    controller.renameItem(2, '하늘');
+
+    await pumpScreen(tester, controller);
+    await tester.tap(find.byKey(const ValueKey('spin')));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 3500));
+    await tester.pump(const Duration(milliseconds: 1));
+
+    expect(controller.lastResult, 1);
+    expect(
+      tester.widget<Text>(find.byKey(const ValueKey('roulette-result'))).data,
+      '지영',
+    );
+
+    await tester.tap(find.byKey(const ValueKey('roulette-remove-1')));
+    await tester.pump();
+
+    expect(find.byKey(const ValueKey('roulette-result')), findsNothing);
+  });
+
   testWidgets('나갔다 와도 항목과 결과가 남는다', (tester) async {
     const seed = 3;
     final controller = await openController(random: Random(seed));
@@ -226,4 +251,25 @@ void main() {
       expect(tester.takeException(), isNull);
     });
   }
+}
+
+/// [nextInt] 가 항상 [value] 를 반환한다. 당첨 칸을 테스트에서 고정할 때 쓴다.
+class _FixedRandom implements Random {
+  _FixedRandom(this.value);
+
+  final int value;
+
+  @override
+  int nextInt(int max) {
+    if (value < 0 || value >= max) {
+      throw RangeError.range(value, 0, max - 1, 'value');
+    }
+    return value;
+  }
+
+  @override
+  double nextDouble() => 0;
+
+  @override
+  bool nextBool() => false;
 }

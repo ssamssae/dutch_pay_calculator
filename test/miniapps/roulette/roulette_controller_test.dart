@@ -110,6 +110,30 @@ void main() {
     expect(controller.lastResult, first);
   });
 
+  test('결과 뒤 항목을 지우면 결과가 지워진다', () async {
+    Future<RouletteController> spunAt(int winner) async {
+      final controller = await open(random: _FixedRandom(winner));
+      controller.renameItem(0, '민수');
+      controller.renameItem(1, '지영');
+      controller.addItem();
+      controller.renameItem(2, '하늘');
+      expect(controller.startSpin(), winner);
+      controller.finishSpin();
+      expect(controller.lastResult, winner);
+      return controller;
+    }
+
+    final removedWinner = await spunAt(1);
+    removedWinner.removeItem(1);
+    expect(removedWinner.items, ['민수', '하늘']);
+    expect(removedWinner.lastResult, isNull);
+
+    final removedBefore = await spunAt(1);
+    removedBefore.removeItem(0);
+    expect(removedBefore.items, ['지영', '하늘']);
+    expect(removedBefore.lastResult, isNull);
+  });
+
   test('뽑기는 고르다', () async {
     final controller = await open(random: Random(42));
     controller.addItem();
@@ -128,4 +152,25 @@ void main() {
       expect(count, inInclusiveRange(1350, 1650));
     }
   });
+}
+
+/// [nextInt] 가 항상 [value] 를 반환한다. 당첨 칸을 테스트에서 고정할 때 쓴다.
+class _FixedRandom implements Random {
+  _FixedRandom(this.value);
+
+  final int value;
+
+  @override
+  int nextInt(int max) {
+    if (value < 0 || value >= max) {
+      throw RangeError.range(value, 0, max - 1, 'value');
+    }
+    return value;
+  }
+
+  @override
+  double nextDouble() => 0;
+
+  @override
+  bool nextBool() => false;
 }

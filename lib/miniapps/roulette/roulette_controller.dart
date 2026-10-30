@@ -50,9 +50,7 @@ class RouletteController extends ChangeNotifier {
     if (_spinning || _items.length <= minItems) return;
     if (index < 0 || index >= _items.length) return;
     _items.removeAt(index);
-    if (_lastResult != null && _lastResult! >= _items.length) {
-      _lastResult = null;
-    }
+    _lastResult = null;
     _persist();
     notifyListeners();
   }

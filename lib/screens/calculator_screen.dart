@@ -4,7 +4,6 @@ import 'package:share_plus/share_plus.dart';
 
 import '../services/account_service.dart';
 import '../services/ads_service.dart';
-import '../services/iap_service.dart';
 import '../theme/app_theme.dart';
 import 'settings_screen.dart';
 
@@ -131,26 +130,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
             ),
           ],
         ),
-        actions: [
-          // 광고 제거 구매 버튼 — 이미 제거됐으면 숨김.
-          ValueListenableBuilder<bool>(
-            valueListenable: IapService.adsRemoved,
-            builder: (context, removed, _) {
-              if (removed) return const SizedBox.shrink();
-              return IconButton(
-                icon: const Icon(Icons.block),
-                tooltip: '광고 제거',
-                onPressed: IapService.buyRemoveAds,
-                style: IconButton.styleFrom(
-                  backgroundColor: TossColors.surfaceElevated,
-                  foregroundColor: TossColors.textSecondary,
-                  shape: const CircleBorder(),
-                ),
-              );
-            },
-          ),
-          SizedBox(width: 12 * scale),
-        ],
       ),
       body: SafeArea(
         top: false,

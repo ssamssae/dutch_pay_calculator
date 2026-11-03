@@ -77,6 +77,30 @@ class Ladder {
     return count;
   }
 
+  /// [row] 번째 행에 [pair] 번 가로줄을 더 그을 수 있는지.
+  ///
+  /// 이미 있거나, 같은 행의 이웃 쌍에 가로줄이 있어 붙게 되면 그을 수 없다.
+  bool canAddRung(int row, int pair) {
+    RangeError.checkValueInInterval(row, 0, rows - 1, 'row');
+    RangeError.checkValueInInterval(pair, 0, columns - 2, 'pair');
+    final line = rungs[row];
+    if (line[pair]) return false;
+    if (pair > 0 && line[pair - 1]) return false;
+    if (pair + 1 < line.length && line[pair + 1]) return false;
+    return true;
+  }
+
+  /// [row] 번째 행에 [pair] 번 가로줄을 하나 더 그은 새 사다리.
+  /// 그을 수 없는 자리면 [StateError].
+  Ladder withRung(int row, int pair) {
+    if (!canAddRung(row, pair)) {
+      throw StateError('행 $row 의 가로줄 $pair 는 그을 수 없습니다');
+    }
+    final grid = [for (final line in rungs) List.of(line)];
+    grid[row][pair] = true;
+    return Ladder(columns: columns, rungs: grid);
+  }
+
   /// [start] 번 세로줄에서 출발해 도착하는 세로줄 번호.
   int endColumn(int start) {
     RangeError.checkValueInInterval(start, 0, columns - 1, 'start');

@@ -273,4 +273,279 @@ void main() {
       expect(tester.takeException(), isNull);
     });
   }
+
+  testWidgets('당첨을 열면 축하 창과 꽃가루, 꽝은 창이 없다', (tester) async {
+    final log = <MethodCall>[];
+    final messenger =
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+    messenger.setMockMethodCallHandler(SystemChannels.platform, (call) async {
+      log.add(call);
+      return null;
+    });
+    addTearDown(() {
+      messenger.setMockMethodCallHandler(SystemChannels.platform, null);
+    });
+
+    final controller = await _controller();
+    addTearDown(controller.dispose);
+    await pumpScreen(tester, controller);
+    await tester.tap(find.byKey(const ValueKey('shuffle')));
+    await tester.pump();
+
+    final board = controller.board!;
+    final lose = board.indexOf(false);
+    final win = board.indexOf(true);
+
+    await tester.tap(find.byKey(ValueKey('ticket-$lose')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('lottery-celebration')), findsNothing);
+    expect(find.text('축하합니다!'), findsNothing);
+
+    await tester.tap(find.byKey(ValueKey('ticket-$win')));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+    expect(find.byKey(const ValueKey('lottery-celebration')), findsOneWidget);
+    expect(find.text('축하합니다!'), findsOneWidget);
+    expect(
+      tester
+          .widget<Text>(find.byKey(const ValueKey('lottery-celebration-label')))
+          .data,
+      '당첨',
+    );
+    expect(find.byKey(const ValueKey('lottery-confetti')), findsOneWidget);
+    final heavy = log.where(
+      (call) =>
+          call.method == 'HapticFeedback.vibrate' &&
+          call.arguments == 'HapticFeedbackType.heavyImpact',
+    );
+    expect(heavy, hasLength(1));
+
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('lottery-celebration-ok')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('lottery-celebration')), findsNothing);
+    expect(
+      find.descendant(
+        of: find.byKey(ValueKey('ticket-$win')),
+        matching: find.text('당첨'),
+      ),
+      findsOneWidget,
+    );
+
+    // 이미 연 당첨 제비를 다시 눌러도 창이 또 뜨지 않는다.
+    await tester.tap(find.byKey(ValueKey('ticket-$win')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('lottery-celebration')), findsNothing);
+    expect(heavy, hasLength(1));
+  });
+
+  testWidgets('직접 쓰기: 12호차·14호차를 적고 누르면 그 결과가 뜬다', (tester) async {
+    final controller = await _controller();
+    addTearDown(controller.dispose);
+    await pumpScreen(tester, controller);
+
+    expect(find.byKey(const ValueKey('lottery-custom-card')), findsNothing);
+    await tester.tap(find.byKey(const ValueKey('lottery-mode-custom')));
+    await tester.pump();
+
+    expect(controller.mode, LotteryMode.custom);
+    expect(find.text('적은 결과를 하나씩 뽑아요'), findsOneWidget);
+    expect(find.byKey(const ValueKey('lottery-custom-card')), findsOneWidget);
+    expect(find.byKey(const ValueKey('count-total')), findsNothing);
+
+    await tester.enterText(
+      find.byKey(const ValueKey('lottery-item-0')),
+      '12호차',
+    );
+    await tester.enterText(
+      find.byKey(const ValueKey('lottery-item-1')),
+      '14호차',
+    );
+    await tester.pump();
+    expect(controller.itemLabels, ['12호차', '14호차']);
+    expect(
+      tester.widget<Text>(find.byKey(const ValueKey('lottery-status'))).data,
+      '남은 제비 2장',
+    );
+
+    await tester.tap(find.byKey(const ValueKey('shuffle')));
+    await tester.pump();
+    final faces = controller.faces!;
+    expect(List.of(faces)..sort(), ['12호차', '14호차']);
+    expect(find.byKey(const ValueKey('ticket-1')), findsOneWidget);
+    expect(find.byKey(const ValueKey('ticket-2')), findsNothing);
+
+    for (var i = 0; i < 2; i++) {
+      await tester.tap(find.byKey(ValueKey('ticket-$i')));
+      await tester.pumpAndSettle();
+      expect(find.text('축하합니다!'), findsOneWidget);
+      expect(
+        tester
+            .widget<Text>(
+              find.byKey(const ValueKey('lottery-celebration-label')),
+            )
+            .data,
+        faces[i],
+      );
+      await tester.tap(find.byKey(const ValueKey('lottery-celebration-ok')));
+      await tester.pumpAndSettle();
+      expect(find.text('축하합니다!'), findsNothing);
+      expect(
+        find.descendant(
+          of: find.byKey(ValueKey('ticket-$i')),
+          matching: find.text(faces[i]),
+        ),
+        findsOneWidget,
+      );
+    }
+    expect(
+      tester.widget<Text>(find.byKey(const ValueKey('lottery-status'))).data,
+      '남은 제비 0장',
+    );
+  });
+
+  testWidgets('창 밖을 눌러도 축하 창이 닫힌다', (tester) async {
+    final controller = await _controller();
+    addTearDown(controller.dispose);
+    controller.setMode(LotteryMode.custom);
+    controller.renameItem(0, '12호차');
+    controller.renameItem(1, '14호차');
+    controller.shuffle();
+    await pumpScreen(tester, controller);
+
+    await tester.tap(find.byKey(const ValueKey('ticket-0')));
+    await tester.pumpAndSettle();
+    expect(find.text('축하합니다!'), findsOneWidget);
+
+    await tester.tapAt(const Offset(10, 10));
+    await tester.pumpAndSettle();
+    expect(find.text('축하합니다!'), findsNothing);
+  });
+
+  testWidgets('줄 추가·장수·지우기, 1장뿐이면 섞기가 꺼진다', (tester) async {
+    final controller = await _controller();
+    addTearDown(controller.dispose);
+    controller.setMode(LotteryMode.custom);
+    await pumpScreen(tester, controller);
+
+    expect(find.text('결과 2장'), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('lottery-add-item')));
+    await tester.pump();
+    expect(find.byKey(const ValueKey('lottery-item-2')), findsOneWidget);
+    expect(find.text('결과 3장'), findsOneWidget);
+
+    await tester.tap(find.byKey(const ValueKey('plus-item-0')));
+    await tester.pump();
+    expect(_count(tester, 'item-0'), '×2');
+    expect(find.text('결과 4장'), findsOneWidget);
+
+    await tester.enterText(
+      find.byKey(const ValueKey('lottery-item-1')),
+      '14호차',
+    );
+    await tester.tap(find.byKey(const ValueKey('lottery-remove-item-0')));
+    await tester.pump();
+    expect(controller.items.map((item) => item.label), ['14호차', '']);
+    expect(
+      tester
+          .widget<EditableText>(
+            find.descendant(
+              of: find.byKey(const ValueKey('lottery-item-0')),
+              matching: find.byType(EditableText),
+            ),
+          )
+          .controller
+          .text,
+      '14호차',
+    );
+
+    await tester.tap(find.byKey(const ValueKey('lottery-remove-item-1')));
+    await tester.pump();
+    expect(controller.items, hasLength(1));
+    expect(
+      tester
+          .widget<IconButton>(
+            find.byKey(const ValueKey('lottery-remove-item-0')),
+          )
+          .onPressed,
+      isNull,
+    );
+    expect(
+      tester.widget<Text>(find.byKey(const ValueKey('lottery-status'))).data,
+      '결과를 2장 이상 적어 주세요',
+    );
+    expect(
+      tester
+          .widget<FilledButton>(find.byKey(const ValueKey('shuffle')))
+          .onPressed,
+      isNull,
+    );
+
+    await tester.tap(find.byKey(const ValueKey('plus-item-0')));
+    await tester.pump();
+    expect(
+      tester
+          .widget<FilledButton>(find.byKey(const ValueKey('shuffle')))
+          .onPressed,
+      isNotNull,
+    );
+  });
+
+  testWidgets('움직임 줄이기를 켜면 꽃가루 없이 창만 뜬다', (tester) async {
+    tester.platformDispatcher.accessibilityFeaturesTestValue =
+        const FakeAccessibilityFeatures(disableAnimations: true);
+    addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
+
+    final controller = await _controller();
+    addTearDown(controller.dispose);
+    controller.setMode(LotteryMode.custom);
+    controller.shuffle();
+    await pumpScreen(tester, controller);
+
+    await tester.tap(find.byKey(const ValueKey('ticket-0')));
+    await tester.pumpAndSettle();
+    expect(find.text('축하합니다!'), findsOneWidget);
+    expect(find.byKey(const ValueKey('lottery-confetti')), findsNothing);
+  });
+
+  for (final device in kLayoutDevices) {
+    testWidgets('직접 쓰기 20장·긴 글·축하 창 넘치지 않는다 ${device.name}', (tester) async {
+      final controller = await _controller();
+      addTearDown(controller.dispose);
+      controller.setMode(LotteryMode.custom);
+      controller.renameItem(0, '가나다라마바사아자차');
+      controller.renameItem(1, 'ABCDEFGHIJ');
+      controller.setItemCount(0, 19);
+      controller.shuffle();
+
+      await pumpOnDevice(tester, device, _app(controller));
+      expect(find.byKey(const ValueKey('lottery-custom-card')), findsOneWidget);
+      expect(tester.takeException(), isNull);
+
+      await tester.scrollUntilVisible(
+        find.byKey(const ValueKey('ticket-19')),
+        300,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('ticket-19')));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+      expect(find.text('축하합니다!'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+
+      await tester.tap(find.byKey(const ValueKey('lottery-celebration-ok')));
+      await tester.pumpAndSettle();
+      expect(
+        find.descendant(
+          of: find.byKey(const ValueKey('ticket-19')),
+          matching: find.text(controller.faces![19]),
+        ),
+        findsOneWidget,
+      );
+      expect(tester.takeException(), isNull);
+    });
+  }
 }

@@ -62,8 +62,19 @@ class LadderRound {
     throw RangeError.range(column, 0, size - 1, 'column');
   }
 
+  /// 가운데에 가로줄을 하나 더 그은 판. 이름·결과 칸 순서는 그대로다.
+  LadderRound withRung(int row, int pair) => LadderRound._(
+    names: names,
+    bottom: bottom,
+    ladder: ladder.withRung(row, pair),
+  );
+
   /// 「결과 복사」 글. 참가자 순서대로 한 줄에 「이름 → 결과」.
-  String get summaryText => [
-    for (var i = 0; i < size; i++) '${names[i]} → ${resultFor(i)}',
+  String get summaryText => summaryTextFor({for (var i = 0; i < size; i++) i});
+
+  /// [players] 만 참가자 순서대로 「이름 → 결과」 줄로 잇는다.
+  String summaryTextFor(Set<int> players) => [
+    for (var i = 0; i < size; i++)
+      if (players.contains(i)) '${names[i]} → ${resultFor(i)}',
   ].join('\n');
 }

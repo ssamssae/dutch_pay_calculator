@@ -55,22 +55,52 @@ class RouletteWheel extends StatelessWidget {
         ),
         const Align(
           alignment: Alignment.topCenter,
-          child: CustomPaint(size: Size(18, 12), painter: _PointerPainter()),
+          child: CustomPaint(
+            key: ValueKey('roulette-pointer'),
+            size: Size(30, 24),
+            painter: _PointerPainter(),
+          ),
         ),
       ],
     );
   }
-}
 
-Color _sliceColor(int index, int count) {
-  // 홀수 칸은 첫 칸과 마지막 칸이 맞닿으므로 셋째 청록으로 경계를 가른다.
-  if (count.isOdd && index == count - 1) return TossColors.accentBorder;
-  return index.isEven ? TossColors.accent : TossColors.accentNeon;
+  /// 위 화살표 색. 알록달록한 칸 위에서도 눈에 띄게 검정에 가까운 색(T-261103-023).
+  static const pointerColor = TossColors.textPrimary;
+
+  /// 칸 색 순서. 이웃 칸끼리 서로 다른 밝은 색이 오도록 섞었다(T-261103-023).
+  static const palette = <Color>[
+    Color(0xFF3182F6), // 파랑
+    Color(0xFFFFB331), // 노랑
+    Color(0xFFF04452), // 빨강
+    Color(0xFF17A58F), // 청록
+    Color(0xFF8B5CF6), // 보라
+    Color(0xFFFF8A3D), // 주황
+    Color(0xFF2BC0E4), // 하늘
+    Color(0xFFFF6CA1), // 분홍
+    Color(0xFF6BCB77), // 연두
+    Color(0xFF4C6EF5), // 남색
+  ];
+
+  /// [count] 칸 원판에서 [index] 칸의 색.
+  ///
+  /// 차례대로 [palette] 를 돌린다. 마지막 칸이 첫 칸과 같은 색이 되면
+  /// 둘이 맞닿으므로 마지막 칸만 다음 색으로 바꾼다.
+  static Color sliceColor(int index, int count) {
+    final n = palette.length;
+    var color = palette[index % n];
+    if (count > 1 && index == count - 1 && index % n == 0) {
+      color = palette[(index + 1) % n];
+      if (color == palette[(index - 1) % n]) color = palette[(index + 2) % n];
+    }
+    return color;
+  }
 }
 
 Color _labelColor(Color slice) {
-  if (slice == TossColors.accent) return TossColors.bgDeep;
-  return TossColors.textPrimary;
+  return ThemeData.estimateBrightnessForColor(slice) == Brightness.dark
+      ? Colors.white
+      : TossColors.textPrimary;
 }
 
 class _DiscPainter extends CustomPainter {
@@ -94,7 +124,7 @@ class _DiscPainter extends CustomPainter {
     canvas.translate(-center.dx, -center.dy);
 
     for (var i = 0; i < count; i++) {
-      final color = _sliceColor(i, count);
+      final color = RouletteWheel.sliceColor(i, count);
       canvas.drawArc(
         rect,
         -pi / 2 + i * sweep,
@@ -202,7 +232,17 @@ class _PointerPainter extends CustomPainter {
       ..lineTo(size.width, 0)
       ..lineTo(size.width / 2, size.height)
       ..close();
-    canvas.drawPath(path, Paint()..color = TossColors.accent);
+    canvas.drawShadow(path, Colors.black, 3, false);
+    canvas.drawPath(path, Paint()..color = RouletteWheel.pointerColor);
+    // 어두운 칸 위에서도 모양이 보이게 흰 테두리를 두른다.
+    canvas.drawPath(
+      path,
+      Paint()
+        ..color = Colors.white
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2
+        ..strokeJoin = StrokeJoin.round,
+    );
   }
 
   @override

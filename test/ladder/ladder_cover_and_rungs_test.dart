@@ -180,10 +180,19 @@ void main() {
         .hideCurrentSnackBar();
     await tester.pumpAndSettle();
 
-    // 0번 참가자가 타고, 도착한 칸을 연 뒤에는 그 사람 줄만 복사한다.
+    // 0번 참가자가 사다리를 탔어도 도착 칸이 가려져 있으면 복사하지 않는다.
     final round = LadderRound.start(_setup, 7);
     await tester.tap(find.byKey(const ValueKey('name-0')));
     await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('copy')));
+    await tester.pumpAndSettle();
+    expect(copied, isEmpty, reason: '탔지만 칸을 안 열었다');
+    tester
+        .state<ScaffoldMessengerState>(find.byType(ScaffoldMessenger))
+        .hideCurrentSnackBar();
+    await tester.pumpAndSettle();
+
+    // 도착한 칸을 연 뒤에는 그 사람 줄만 복사한다.
     final end = round.ladder.endColumn(0);
     await tester.tap(find.byKey(ValueKey('result-cell-$end')));
     await tester.pumpAndSettle();

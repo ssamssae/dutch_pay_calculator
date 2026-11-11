@@ -7,6 +7,9 @@ import '../services/ads_service.dart';
 import '../theme/app_theme.dart';
 import 'settings_screen.dart';
 
+/// 배너가 보일 때 아래쪽 누를 수 있는 영역과 떼어 두는 세로 여백.
+const _bannerContentGap = 8.0;
+
 /// 계산기 탭 — 금액 입력 → 인원수 조정 → 1인당 금액 실시간 표시 → 카톡 공유.
 class CalculatorScreen extends StatefulWidget {
   const CalculatorScreen({super.key});
@@ -135,8 +138,16 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         top: false,
         child: Column(
           children: [
+            // 광고 배너: 앱바 바로 아래. 키패드와 배너 사이에 내용 영역 전체가 있다.
+            const AdaptiveBanner(
+              key: ValueKey('calculator-banner'),
+              contentGap: _bannerContentGap,
+              reserveSpace: true,
+            ),
+
             // 상단 콘텐츠 영역 (남는 공간 전부)
             Expanded(
+              key: const ValueKey('calculator-content'),
               flex: 5,
               child: Padding(
                 padding: EdgeInsets.symmetric(
@@ -455,12 +466,10 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
               ),
             ),
 
-            // 광고 배너 (키패드 위)
-            const AdaptiveBanner(),
-
             // 하단 고정: 키패드
             // 키패드: 격자선 대신 둥근 키 (T-261028-010).
             Container(
+              key: const ValueKey('calculator-keypad'),
               decoration: const BoxDecoration(
                 color: TossColors.surface,
                 border: Border(top: BorderSide(color: TossColors.divider)),
